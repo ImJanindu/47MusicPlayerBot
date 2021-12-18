@@ -24,6 +24,8 @@ SOFTWARE.
 
 import os
 import logging
+from pytube import YouTube
+from youtube_search import YoutubeSearch
 from pytgcalls import PyTgCalls, idle
 from pytgcalls.types import AudioPiped
 from pyrogram import Client, filters
@@ -42,13 +44,29 @@ app = PyTgCalls(client)
 
 @bot.on_message(filters.command("play") & filters.group)
 async def play(_, message):
+    try:
+       query = message.text.split(None, 1)[1]
+    except:
+       return await message.reply_text("Usage:\n - <code>/play [query]</code>")
     chat_id = message.chat.id
-    await app.join_group_call(
-        chat_id,
-        AudioPiped(
-            'http://docs.evostream.com/sample_content/assets/sintel1m720p.mp4',
+    m = await message.reply_text("Processing...")
+    try:
+        results = YoutubeSearch(query, max_results=1).to_dict()
+        link = f"https://youtube.com{results[0]['url_suffix']}"
+        yt = YouTube(link)
+        aud = yt.streams.get_by_itag(140).download()
+        path = "{}".format(aud)
+    except Exception as e:
+        return await m.edit(str(e))
+    
+    try:
+        await app.join_group_call(
+            chat_id,
+            AudioPiped(aud)
         )
-    )
+        await m.edit("Playing...")
+    except Exception as e:
+        return await m.edit(str(e))
 
 app.start()   
 bot.run()
