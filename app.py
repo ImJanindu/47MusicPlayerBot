@@ -79,21 +79,35 @@ async def play(_, message):
         return await m.edit(str(e))
     
 
-@bot.on_message(filters.command("end") & filters.group)
+@bot.on_message(filters.command("stop") & filters.group)
 async def end(_, message):
     chat_id = message.chat_id
     if str(chat_id) in CHATS:
         await app.leave_group_call(chat_id)
-        await message.reply_text("Stopped streaming.)
+        await message.reply_text("Stopped streaming.")
     else:
         await message.reply_text("Nothing is playing.")
         
-    
-    
-    
-    
-    
 
+@bot.on_message(filters.command("pause") & filters.group)
+async def pause(_, message):
+    chat_id = message.chat_id
+    if str(chat_id) in CHATS:
+        await app.pause_stream(chat_id)
+        await message.reply_text("Paused streaming.")
+    else:
+        await message.reply_text("Nothing is playing.")
+        
+        
+@bot.on_message(filters.command("resume") & filters.group)
+async def resume(_, message):
+    chat_id = message.chat_id
+    if str(chat_id) in CHATS:
+        await app.resume_stream(chat_id)
+        await message.reply_text("Resumed streaming.")
+    else:
+        await message.reply_text("Nothing is playing.")
+    
 
 app.start()   
 bot.run()
