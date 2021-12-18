@@ -43,7 +43,7 @@ app = PyTgCalls(client)
 @bot.on_message(filters.command("play") & filters.group)
 async def play(_, message):
     chat_id = message.chat.id
-    app.join_group_call(
+    await app.join_group_call(
         chat_id,
         AudioPiped(
             'http://docs.evostream.com/sample_content/assets/sintel1m720p.mp4',
