@@ -74,7 +74,7 @@ async def play(_, message):
                 AudioPiped(aud)
             )
             CHATS.append(str(chat_id))
-        await m.edit("Playing...")
+            await m.edit("Playing...")
     except Exception as e:
         return await m.edit(str(e))
 
