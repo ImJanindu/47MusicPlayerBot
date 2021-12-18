@@ -62,7 +62,7 @@ async def play(_, message):
         return await m.edit(str(e))
     
     try:
-        if chat_id in CHATS:
+        if str(chat_id) in CHATS:
             await app.change_stream(
                 chat_id,
                 AudioPiped(aud)
