@@ -1,6 +1,6 @@
 {
   "name": "Music Stream Bot",
-  "description": "Bot to play songs in Telegram's group voice chat. Powered by PyTgCalls.",
+  "description": "Bot to play songs in Telegram group voice chats. Powered by PyTgCalls.",
   "keywords": ["music", "voicechat", "telegram"],
   "repository": "https://github.com/ImJanindu/47Music",
   "stack": "container",
