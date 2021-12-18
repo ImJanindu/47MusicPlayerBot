@@ -54,7 +54,7 @@ async def play(_, message):
     try:
        query = message.text.split(None, 1)[1]
     except:
-       return await message.reply_text("Syntax:\n - <code>/play [query]</code>")
+       return await message.reply_text("<b>Usage:</b> <code>/play [query]</code>")
     chat_id = message.chat.id
     m = await message.reply_text("Processing...")
     try:
@@ -73,6 +73,7 @@ async def play(_, message):
                 AudioPiped(aud)
             )
             await m.edit("Playing...")
+            os.remove(aud)
         else:            
             await app.join_group_call(
                 chat_id,
@@ -80,6 +81,7 @@ async def play(_, message):
             )
             CHATS.append(str(chat_id))
             await m.edit("Playing...")
+            os.remove(aud)
     except Exception as e:
         return await m.edit(str(e))
     
