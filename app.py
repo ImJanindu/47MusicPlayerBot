@@ -49,7 +49,7 @@ async def play(_, message):
     try:
        query = message.text.split(None, 1)[1]
     except:
-       return await message.reply_text("Usage:\n - <code>/play [query]</code>")
+       return await message.reply_text("Syntax:\n - <code>/play [query]</code>")
     chat_id = message.chat.id
     m = await message.reply_text("Processing...")
     try:
@@ -67,7 +67,7 @@ async def play(_, message):
                 chat_id,
                 AudioPiped(aud)
             )
-            await m.edit("Hell playing...")
+            await m.edit("Playing...")
         else:            
             await app.join_group_call(
                 chat_id,
@@ -77,6 +77,23 @@ async def play(_, message):
             await m.edit("Playing...")
     except Exception as e:
         return await m.edit(str(e))
+    
+
+@bot.on_message(filters.command("end") & filters.group)
+async def end(_, message):
+    chat_id = message.chat_id
+    if str(chat_id) in CHATS:
+        await app.leave_group_call(chat_id)
+        await message.reply_text("Stopped streaming.)
+    else:
+        await message.reply_text("Nothing is playing.")
+        
+    
+    
+    
+    
+    
+
 
 app.start()   
 bot.run()
