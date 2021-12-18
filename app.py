@@ -42,6 +42,8 @@ client = Client(os.environ["SESSION_NAME"], int(os.environ["API_ID"]), os.enviro
 
 app = PyTgCalls(client)
 
+CHATS = []
+
 @bot.on_message(filters.command("play") & filters.group)
 async def play(_, message):
     try:
@@ -60,16 +62,18 @@ async def play(_, message):
         return await m.edit(str(e))
     
     try:
-        if GroupCall.is_playing(chat_id):
+        if chat_id in CHATS:
             await app.change_stream(
                 chat_id,
                 AudioPiped(aud)
             )
+            await m.edit("Hell playing...")
         else:            
             await app.join_group_call(
                 chat_id,
                 AudioPiped(aud)
             )
+            CHATS.append(str(chat_id))
         await m.edit("Playing...")
     except Exception as e:
         return await m.edit(str(e))
