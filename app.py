@@ -44,8 +44,13 @@ app = PyTgCalls(client)
 
 CHATS = []
 
+OWNER_ID = int(os.environ["OWNER_ID"])
+
 @bot.on_message(filters.command("play") & filters.group)
 async def play(_, message):
+    user_id = message.from_user.id
+    if user_id != OWNER_ID:
+        return
     try:
        query = message.text.split(None, 1)[1]
     except:
@@ -81,7 +86,10 @@ async def play(_, message):
 
 @bot.on_message(filters.command("stop") & filters.group)
 async def end(_, message):
-    chat_id = message.chat_id
+    user_id = message.from_user.id
+    if user_id != OWNER_ID:
+        return
+    chat_id = message.chat.id
     if str(chat_id) in CHATS:
         await app.leave_group_call(chat_id)
         await message.reply_text("Stopped streaming.")
@@ -91,7 +99,10 @@ async def end(_, message):
 
 @bot.on_message(filters.command("pause") & filters.group)
 async def pause(_, message):
-    chat_id = message.chat_id
+    user_id = message.from_user.id
+    if user_id != OWNER_ID:
+        return
+    chat_id = message.chat.id
     if str(chat_id) in CHATS:
         await app.pause_stream(chat_id)
         await message.reply_text("Paused streaming.")
@@ -101,7 +112,10 @@ async def pause(_, message):
         
 @bot.on_message(filters.command("resume") & filters.group)
 async def resume(_, message):
-    chat_id = message.chat_id
+    user_id = message.from_user.id
+    if user_id != OWNER_ID:
+        return
+    chat_id = message.chat.id
     if str(chat_id) in CHATS:
         await app.resume_stream(chat_id)
         await message.reply_text("Resumed streaming.")
