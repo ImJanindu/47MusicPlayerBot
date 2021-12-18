@@ -1,3 +1,3 @@
 # 47Music Player 🎵
 
-### Play Music in Telegram's voice chats Like AK47 ✨
+### Play songs in Telegram's group voice chats like AK47 ✨
