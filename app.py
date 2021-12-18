@@ -62,7 +62,6 @@ async def play(_, message):
         link = f"https://youtube.com{results[0]['url_suffix']}"
         yt = YouTube(link)
         aud = yt.streams.get_by_itag(140).download()
-        path = "{}".format(aud)
     except Exception as e:
         return await m.edit(str(e))
     
@@ -72,7 +71,7 @@ async def play(_, message):
                 chat_id,
                 AudioPiped(aud)
             )
-            await m.edit("Playing...")
+            await m.edit(f"Playing <b>{yt.title}</b>")
             os.remove(aud)
         else:            
             await app.join_group_call(
@@ -80,7 +79,7 @@ async def play(_, message):
                 AudioPiped(aud)
             )
             CHATS.append(str(chat_id))
-            await m.edit("Playing...")
+            await m.edit(f"Playing <b>{yt.title}</b>")
             os.remove(aud)
     except Exception as e:
         return await m.edit(str(e))
@@ -94,6 +93,7 @@ async def end(_, message):
     chat_id = message.chat.id
     if str(chat_id) in CHATS:
         await app.leave_group_call(chat_id)
+        CHATS.clear()
         await message.reply_text("Stopped streaming.")
     else:
         await message.reply_text("Nothing is playing.")
