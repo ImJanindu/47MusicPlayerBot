@@ -20,6 +20,10 @@
     "API_HASH": {
       "description": "App hash from my.telegram.org/apps",
       "required": true
+    },
+    "OWNER_ID": {
+      "description": "Your telegram id",
+      "required": true
     }
   }
 }
