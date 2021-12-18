@@ -1,3 +1,10 @@
 # 47Music Player 🎵
 
-### Play songs in Telegram's group voice chats like AK47 ✨
+### Play songs in Telegram group voice chats like AK47 ✨
+
+#
+<a href="https://dashboard.heroku.com/new?template=https://github.com/ImJanindu/47MusicPlayer"><img src="https://img.shields.io/badge/Deploy%20To%20Heroku-blueviolet?style=for-the-badge&logo=heroku" width="250"></a> 
+
+#
+### Distributed under the [MIT Licence.](https://github.com/ImJanindu/47MusicPlayer/blob/main/LICENSE) See `LICENSE.md` for more information.
+
