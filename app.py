@@ -27,7 +27,7 @@ import logging
 from pytube import YouTube
 from youtube_search import YoutubeSearch
 from pytgcalls import PyTgCalls, idle
-from pytgcalls.types import AudioPiped
+from pytgcalls.types import AudioPiped, GroupCall
 from pyrogram import Client, filters
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, CallbackQuery
 
@@ -60,10 +60,16 @@ async def play(_, message):
         return await m.edit(str(e))
     
     try:
-        await app.join_group_call(
-            chat_id,
-            AudioPiped(aud)
-        )
+        if GroupCall.is_playing(chat_id):
+            await app.change_stream(
+                chat_id,
+                AudioPiped(aud)
+            )
+        else:            
+            await app.join_group_call(
+                chat_id,
+                AudioPiped(aud)
+            )
         await m.edit("Playing...")
     except Exception as e:
         return await m.edit(str(e))
