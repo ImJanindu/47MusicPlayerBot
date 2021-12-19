@@ -48,16 +48,16 @@ OWNER_ID = int(os.environ["OWNER_ID"])
 
 START_TEXT = """
 Hi <b>{}</b> 👋
-I'm a Telegram group voice chat music player bot. Only my owner can operate me.
+I can play music in Telegram group voice chats. 
 
-<i>Make your own bot from source code.</i>
+<i>Only my owner can operate me. Make your own bot from the source code.</i>
 """
 
 START_BUTTONS = InlineKeyboardMarkup(
     [
         [
             InlineKeyboardButton("📨 Support", url="https://t.me/JaguarBots"),
-            InlineKeyboardButton("📚 Source", url="https://github.com/ImJanindu/47MusicPlayerBot")
+            InlineKeyboardButton("📚 Source Code", url="https://github.com/ImJanindu/47MusicPlayerBot")
         ]
     ]
 )
