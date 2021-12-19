@@ -53,9 +53,9 @@ async def play(_, message):
     if user_id != OWNER_ID:
         return
     try:
-       query = message.text.split(None, 1)[1]
+        query = message.text.split(None, 1)[1]
     except:
-       return await message.reply_text("<b>Usage:</b> <code>/play [query]</code>")
+        return await message.reply_text("<b>Usage:</b> <code>/play [query]</code>")
     chat_id = message.chat.id
     m = await message.reply_text("Processing...")
     try:
@@ -133,6 +133,17 @@ async def resume(_, message):
             await message.reply_text("Nothing is playing.")
     else:
         await message.reply_text("Nothing is playing.")
+        
+        
+@bot.on_message(filters.command("volume") & filters.group)
+async def volume(_, message):
+    user_id = message.from_user.id
+    if user_id != OWNER_ID:
+        return
+    try:
+        inputt = message.text.split(None, 1)[1]      
+    except:
+       return await message.reply_text("<b>Usage:</b> <code>/volume [number from 1 to 200]</code>"
     
 
 app.start()   
