@@ -46,6 +46,7 @@ CHATS = []
 
 OWNER_ID = int(os.environ["OWNER_ID"])
 
+
 @bot.on_message(filters.command("play") & filters.group)
 async def play(_, message):
     user_id = message.from_user.id
@@ -60,6 +61,7 @@ async def play(_, message):
     try:
         results = YoutubeSearch(query, max_results=1).to_dict()
         link = f"https://youtube.com{results[0]['url_suffix']}"
+        thumbnail = results[0]["thumbnails"][0]
         yt = YouTube(link)
         aud = yt.streams.get_by_itag(140).download()
     except Exception as e:
@@ -71,7 +73,8 @@ async def play(_, message):
                 chat_id,
                 AudioPiped(aud)
             )
-            await m.edit("Playing...")
+            await message.reply_photo(thumbnail, caption="Playing...")
+            await m.delete()
             os.remove(aud)
         else:            
             await app.join_group_call(
@@ -79,7 +82,8 @@ async def play(_, message):
                 AudioPiped(aud)
             )
             CHATS.append(str(chat_id))
-            await m.edit("Playing...")
+            await message.reply_photo(thumbnail, caption="Playing...")
+            await m.delete()
             os.remove(aud)
     except Exception as e:
         return await m.edit(str(e))
@@ -99,6 +103,7 @@ async def stream_video(_, message):
     try:
         results = YoutubeSearch(query, max_results=1).to_dict()
         link = f"https://youtube.com{results[0]['url_suffix']}"
+        thumbnail = results[0]["thumbnails"][0]
         yt = YouTube(link)
         vid = yt.streams.get_by_itag(18).download()
     except Exception as e:
@@ -110,7 +115,8 @@ async def stream_video(_, message):
                 chat_id,
                 AudioVideoPiped(vid)
             )
-            await m.edit("Playing...")
+            await message.reply_photo(thumbnail, caption="Playing...")
+            await m.delete()
             os.remove(vid)
         else:            
             await app.join_group_call(
@@ -118,7 +124,8 @@ async def stream_video(_, message):
                 AudioVideoPiped(vid)
             )
             CHATS.append(str(chat_id))
-            await m.edit("Playing...")
+            await message.reply_photo(thumbnail, caption="Playing...")
+            await m.delete()
             os.remove(vid)
     except Exception as e:
         return await m.edit(str(e)) 
