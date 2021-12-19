@@ -2,4 +2,4 @@ pyrogram
 tgcrypto
 py-tgcalls
 pytube
-youtube_search
+youtube-search-python
