@@ -72,7 +72,7 @@ async def callbacks(_, cq: CallbackQuery):
         except:
             await cq.answer("Nothing is playing.")
       
-    elif data == "resume"
+    elif data == "resume":
         try:
             await app.resume_stream(chat_id)
             await cq.answer("Resumed streaming.")
