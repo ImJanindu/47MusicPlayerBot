@@ -133,6 +133,38 @@ async def resume(_, message):
         await message.reply_text("Nothing is playing.")
         
         
+@bot.on_message(filters.command("mute") & filters.group)
+async def mute(_, message):
+    user_id = message.from_user.id
+    if user_id != OWNER_ID:
+        return
+    chat_id = message.chat.id
+    if str(chat_id) in CHATS:
+        try:
+            await app.mute_stream(chat_id)
+            await message.reply_text("Muted streaming.")
+        except:
+            await message.reply_text("Nothing is playing.")
+    else:
+        await message.reply_text("Nothing is playing.")
+        
+        
+@bot.on_message(filters.command("unmute") & filters.group)
+async def unmute(_, message):
+    user_id = message.from_user.id
+    if user_id != OWNER_ID:
+        return
+    chat_id = message.chat.id
+    if str(chat_id) in CHATS:
+        try:
+            await app.unmute_stream(chat_id)
+            await message.reply_text("Unmuted streaming.")
+        except:
+            await message.reply_text("Nothing is playing.")
+    else:
+        await message.reply_text("Nothing is playing.")
+        
+        
 @bot.on_message(filters.command("volume") & filters.group)
 async def volume(_, message):
     user_id = message.from_user.id
