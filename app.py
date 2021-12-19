@@ -27,7 +27,7 @@ import logging
 from pytube import YouTube
 from youtube_search import YoutubeSearch
 from pytgcalls import PyTgCalls, idle
-from pytgcalls.types import AudioPiped, GroupCall
+from pytgcalls.types import AudioPiped, AudioVideoPiped, GroupCall
 from pyrogram import Client, filters
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, CallbackQuery
 
@@ -111,7 +111,7 @@ async def stream_video(_, message):
                 AudioVideoPiped(vid)
             )
             await m.edit("Playing...")
-            os.remove(aud)
+            os.remove(vid)
         else:            
             await app.join_group_call(
                 chat_id,
