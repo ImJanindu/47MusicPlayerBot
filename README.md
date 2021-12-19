@@ -1,6 +1,5 @@
 <h2 align= center><b>🎧 47Music Player 🎧</b></h1>
-<h3 align = center>A Telegram bot that can play songs in Telegram group voice chats like AK47<br>
-(No queues)</h3>
+<h3 align = center>A Telegram bot that can play songs in Telegram group voice chats like AK47</h3>
 
 <p align="center">
 <a href="https://python.org"><img src="http://forthebadge.com/images/badges/made-with-python.svg" alt="made-with-python"></a>
@@ -30,4 +29,6 @@
 
 Distributed under the [MIT Licence.](https://github.com/ImJanindu/47MusicPlayer/blob/main/LICENSE) See `LICENSE.md` for more information.
 
+## Should Be Considered
 
+This bot hasn't queues and only working in one Telegram group voice chat at one time.
