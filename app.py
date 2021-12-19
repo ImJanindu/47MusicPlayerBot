@@ -42,6 +42,8 @@ client = Client(os.environ["SESSION_NAME"], int(os.environ["API_ID"]), os.enviro
 
 app = PyTgCalls(client)
 
+LOGGER = logging.getLogger(__name__)
+
 CHATS = []
 
 OWNER_ID = int(os.environ["OWNER_ID"])
@@ -162,32 +164,9 @@ async def unmute(_, message):
             await message.reply_text("Nothing is playing.")
     else:
         await message.reply_text("Nothing is playing.")
-        
-        
-@bot.on_message(filters.command("volume") & filters.group)
-async def volume(_, message):
-    user_id = message.from_user.id
-    if user_id != OWNER_ID:
-        return
-    try:
-        inputt = message.text.split(None, 1)[1]      
-    except:
-        return await message.reply_text("<b>Usage:</b> <code>/volume [number from 1 to 200]</code>")
-    try:
-        vol = int(inputt)
-    except:
-        return await message.reply_text("<b>Usage:</b> <code>/volume [number from 1 to 200]</code>")
-    chat_id = message.chat.id
-    try:
-        await app.change_volume_call(
-            chat_id,
-            vol,
-        )
-        await message.reply_text(f"Player volume changed to {vol}.")
-    except Exception as e:
-        return await message.reply_text(str(e))
             
 
 app.start()   
 bot.run()
+LOGGER.info("Bot started.")
 idle()
