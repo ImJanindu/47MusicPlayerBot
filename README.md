@@ -1,5 +1,5 @@
-<h2 align= center><b>🎧 47Music Player Bot 🎧</b></h1>
-<h3 align = center>Play songs in Telegram group voice chats like AK47</h3>
+<h2 align= center><b>🎧 47Music Player 🎧</b></h1>
+<h3 align = center>A Telegram bot that can play songs in Telegram group voice chats like AK47 (No queues)</h3>
 
 <h2 align="center">Deployment Methods 🏃‍♂</h2>
 <p align="center">
@@ -20,6 +20,6 @@
 
 ## License
 
-### Distributed under the [MIT Licence.](https://github.com/ImJanindu/47MusicPlayer/blob/main/LICENSE) See `LICENSE.md` for more information.
+Distributed under the [MIT Licence.](https://github.com/ImJanindu/47MusicPlayer/blob/main/LICENSE) See `LICENSE.md` for more information.
 
 
