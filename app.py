@@ -25,7 +25,7 @@ SOFTWARE.
 import os
 import logging
 from pytube import YouTube
-from youtubesearchpython import VideosSearch
+from youtube_search import YouTubeSearch
 from pytgcalls import PyTgCalls, idle
 from pytgcalls.types import AudioPiped, AudioVideoPiped, GroupCall
 from pyrogram import Client, filters
@@ -92,9 +92,8 @@ async def play(_, message):
     chat_id = message.chat.id
     m = await message.reply_text("🔄 Processing...")
     try:
-        results = VideosSearch(query, limit=1)
-        for result in results.result()["result"]:
-            link = result["link"]
+        results = YoutubeSearch(query, max_results=1).to_dict()
+        link = f"https://youtube.com{results[0]['url_suffix']}"
         yt = YouTube(link)
         aud = yt.streams.get_by_itag(140).download()
     except Exception as e:
