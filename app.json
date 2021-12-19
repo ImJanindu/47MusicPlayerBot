@@ -14,15 +14,15 @@
       "required": true
     },
     "API_ID": {
-      "description": "App ID from my.telegram.org/apps",
+      "description": "API_ID from my.telegram.org/apps",
       "required": true
     },
     "API_HASH": {
-      "description": "App hash from my.telegram.org/apps",
+      "description": "API_HASH from my.telegram.org/apps",
       "required": true
     },
     "OWNER_ID": {
-      "description": "Your telegram id",
+      "description": "Your Telegram ID",
       "required": true
     }
   }
