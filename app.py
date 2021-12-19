@@ -49,15 +49,21 @@ OWNER_ID = int(os.environ["OWNER_ID"])
 BUTTONS = InlineKeyboardMarkup(
     [
         [
-            InlineKeyboardButton("⏸ Pause", callback_data="pause"),
-            InlineKeyboardButton("▶️ Resume", callback_data="resume")
+            InlineKeyboardButton("⏸", callback_data="pause"),
+            InlineKeyboardButton("▶️", callback_data="resume"),
+            InlineKeyboardButton("⏹", callback_data="stop")
+        ],
+        [
+            InlineKeyboardButton("🗑 Close Menu", callback_data="close")
         ]
     ]
 )
 
 
 @bot.on_callback_query()
-async def callbacks(_, cq: CallbackQuery):    
+async def callbacks(_, cq: CallbackQuery): 
+    if cq.from_user.id != OWNER_ID:
+        return await cq.answer("You aren't the owner of me.")   
     chat_id = cq.message.chat.id
     if not str(chat_id) in CHATS:
         return await cq.answer("Nothing is playing.")
@@ -74,11 +80,20 @@ async def callbacks(_, cq: CallbackQuery):
             await app.resume_stream(chat_id)
             await cq.answer("Resumed streaming.")
         except:
-            await cq.answer("Nothing is playing.")                
+            await cq.answer("Nothing is playing.")   
+
+    elif data == "stop":
+        await app.leave_group_call(chat_id)
+        CHATS.clear()
+        await cq.answer("Stopped streaming.")
+
+    elif data == "close":
+        await cq.message.delete()           
 
 
 @bot.on_message(filters.command("play") & filters.group)
 async def play(_, message):
+    await message.delete()
     user_id = message.from_user.id
     if user_id != OWNER_ID:
         return
@@ -91,7 +106,9 @@ async def play(_, message):
     try:
         results = YoutubeSearch(query, max_results=1).to_dict()
         link = f"https://youtube.com{results[0]['url_suffix']}"
+        thumb = results[0]["thumbnails"][0]
         yt = YouTube(link)
+        cap = "▶️ Playing..."
         aud = yt.streams.get_by_itag(140).download()
     except Exception as e:
         return await m.edit(str(e))
@@ -102,7 +119,8 @@ async def play(_, message):
                 chat_id,
                 AudioPiped(aud)
             )
-            await m.edit("▶️ Playing...", reply_markup=BUTTONS)
+            await message.reply_photo(thumb, caption=cap, reply_markup=BUTTONS)
+            await m.delete()
             os.remove(aud)
         else:            
             await app.join_group_call(
@@ -110,7 +128,8 @@ async def play(_, message):
                 AudioPiped(aud)
             )
             CHATS.append(str(chat_id))
-            await m.edit("▶️ Playing...", reply_markup=BUTTONS)
+            await message.reply_photo(thumb, caption=cap, reply_markup=BUTTONS)
+            await m.delete()
             os.remove(aud)
     except Exception as e:
         return await m.edit(str(e))
