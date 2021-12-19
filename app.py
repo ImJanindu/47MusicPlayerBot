@@ -181,6 +181,7 @@ async def play(_, message):
 
 @bot.on_message(filters.command("stop") & filters.group)
 async def end(_, message):
+    await message.delete()
     user_id = message.from_user.id
     if user_id != OWNER_ID:
         return
@@ -195,6 +196,7 @@ async def end(_, message):
 
 @bot.on_message(filters.command("pause") & filters.group)
 async def pause(_, message):
+    await message.delete()
     user_id = message.from_user.id
     if user_id != OWNER_ID:
         return
@@ -211,6 +213,7 @@ async def pause(_, message):
         
 @bot.on_message(filters.command("resume") & filters.group)
 async def resume(_, message):
+    await message.delete()
     user_id = message.from_user.id
     if user_id != OWNER_ID:
         return
@@ -227,6 +230,7 @@ async def resume(_, message):
         
 @bot.on_message(filters.command("mute") & filters.group)
 async def mute(_, message):
+    await message.delete()
     user_id = message.from_user.id
     if user_id != OWNER_ID:
         return
@@ -243,6 +247,7 @@ async def mute(_, message):
         
 @bot.on_message(filters.command("unmute") & filters.group)
 async def unmute(_, message):
+    await message.delete()
     user_id = message.from_user.id
     if user_id != OWNER_ID:
         return
