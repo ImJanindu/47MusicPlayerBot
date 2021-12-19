@@ -25,7 +25,7 @@ SOFTWARE.
 import os
 import logging
 from pytube import YouTube
-from youtube_search import YoutubeSearch
+from youtubesearchpython import VideosSearch
 from pytgcalls import PyTgCalls, idle
 from pytgcalls.types import AudioPiped, AudioVideoPiped, GroupCall
 from pyrogram import Client, filters
@@ -92,8 +92,9 @@ async def play(_, message):
     chat_id = message.chat.id
     m = await message.reply_text("🔄 Processing...")
     try:
-        results = YoutubeSearch(query, max_results=1).to_dict()
-        link = f"https://youtube.com{results[0]['url_suffix']}"
+        results = VideosSearch(query, limit=1)
+        for result in results.result()["result"]:
+            link = result["link"]
         yt = YouTube(link)
         aud = yt.streams.get_by_itag(140).download()
     except Exception as e:
@@ -105,7 +106,7 @@ async def play(_, message):
                 chat_id,
                 AudioPiped(aud)
             )
-            await m.edit("▶️ Playing...")
+            await m.edit("▶️ Playing...", reply_markup=BUTTONS)
             os.remove(aud)
         else:            
             await app.join_group_call(
@@ -113,7 +114,7 @@ async def play(_, message):
                 AudioPiped(aud)
             )
             CHATS.append(str(chat_id))
-            await m.edit("▶️ Playing...")
+            await m.edit("▶️ Playing...", reply_markup=BUTTONS)
             os.remove(aud)
     except Exception as e:
         return await m.edit(str(e))
