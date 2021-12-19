@@ -29,6 +29,6 @@
 
 Distributed under the [MIT Licence.](https://github.com/ImJanindu/47MusicPlayer/blob/main/LICENSE) See `LICENSE.md` for more information.
 
-## Should Be Considered
+## Disclaimer
 
 This bot hasn't queues and only working in one Telegram group voice chat at one time.
