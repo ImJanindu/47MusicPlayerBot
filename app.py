@@ -25,7 +25,7 @@ SOFTWARE.
 import os
 import logging
 from pytube import YouTube
-from youtube_search import YouTubeSearch
+from youtube_search import YoutubeSearch
 from pytgcalls import PyTgCalls, idle
 from pytgcalls.types import AudioPiped, AudioVideoPiped, GroupCall
 from pyrogram import Client, filters
