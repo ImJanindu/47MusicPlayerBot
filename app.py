@@ -42,8 +42,6 @@ client = Client(os.environ["SESSION_NAME"], int(os.environ["API_ID"]), os.enviro
 
 app = PyTgCalls(client)
 
-LOGGER = logging.getLogger(__name__)
-
 CHATS = []
 
 OWNER_ID = int(os.environ["OWNER_ID"])
@@ -167,6 +165,5 @@ async def unmute(_, message):
             
 
 app.start()
-LOGGER.info("Bot started.")
 bot.run()
 idle()
