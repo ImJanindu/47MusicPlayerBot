@@ -46,6 +46,15 @@ CHATS = []
 
 OWNER_ID = int(os.environ["OWNER_ID"])
 
+START_BUTTONS = InlineKeyboardMarkup(
+    [
+        [
+            InlineKeyboardButton("📨 Support", url="https://t.me/JaguarBots"),
+            InlineKeyboardButton("📚 Source", url="https://github.com/ImJanindu/47MusicPlayerBot")
+        ]
+    ]
+)
+
 BUTTONS = InlineKeyboardMarkup(
     [
         [
