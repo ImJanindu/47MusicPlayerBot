@@ -61,7 +61,6 @@ async def play(_, message):
     try:
         results = YoutubeSearch(query, max_results=1).to_dict()
         link = f"https://youtube.com{results[0]['url_suffix']}"
-        thumbnail = results[0]["thumbnails"][0]
         yt = YouTube(link)
         aud = yt.streams.get_by_itag(140).download()
     except Exception as e:
