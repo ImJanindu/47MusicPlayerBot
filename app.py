@@ -84,6 +84,45 @@ async def play(_, message):
     except Exception as e:
         return await m.edit(str(e))
     
+    
+@bot.on_message(filters.command("stream") & filters.group)
+async def stream_video(_, message):
+    user_id = message.from_user.id
+    if user_id != OWNER_ID:
+        return
+    try:
+       query = message.text.split(None, 1)[1]
+    except:
+       return await message.reply_text("<b>Usage:</b> <code>/stream [query]</code>")
+    chat_id = message.chat.id
+    m = await message.reply_text("Processing...")
+    try:
+        results = YoutubeSearch(query, max_results=1).to_dict()
+        link = f"https://youtube.com{results[0]['url_suffix']}"
+        yt = YouTube(link)
+        vid = yt.streams.get_by_itag(22).download()
+    except Exception as e:
+        return await m.edit(str(e))
+    
+    try:
+        if str(chat_id) in CHATS:
+            await app.change_stream(
+                chat_id,
+                AudioVideoPiped(vid)
+            )
+            await m.edit("Playing...")
+            os.remove(aud)
+        else:            
+            await app.join_group_call(
+                chat_id,
+                AudioVideoPiped(vid)
+            )
+            CHATS.append(str(chat_id))
+            await m.edit("Playing...")
+            os.remove(vid)
+    except Exception as e:
+        return await m.edit(str(e)) 
+    
 
 @bot.on_message(filters.command("stop") & filters.group)
 async def end(_, message):
@@ -106,8 +145,11 @@ async def pause(_, message):
         return
     chat_id = message.chat.id
     if str(chat_id) in CHATS:
-        await app.pause_stream(chat_id)
-        await message.reply_text("Paused streaming.")
+        try:
+            await app.pause_stream(chat_id)
+            await message.reply_text("Paused streaming.")
+        except:
+            await message.reply_text("Nothing is playing.")
     else:
         await message.reply_text("Nothing is playing.")
         
@@ -119,8 +161,11 @@ async def resume(_, message):
         return
     chat_id = message.chat.id
     if str(chat_id) in CHATS:
-        await app.resume_stream(chat_id)
-        await message.reply_text("Resumed streaming.")
+        try:
+            await app.resume_stream(chat_id)
+            await message.reply_text("Resumed streaming.")
+        except:
+            await message.reply_text("Nothing is playing.")
     else:
         await message.reply_text("Nothing is playing.")
     
