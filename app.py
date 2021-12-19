@@ -65,9 +65,12 @@ async def callbacks(_, cq: CallbackQuery):
     if cq.from_user.id != OWNER_ID:
         return await cq.answer("You aren't the owner of me.")   
     chat_id = cq.message.chat.id
+    data = cq.data
+    if data == "close":
+        return await cq.message.delete()
     if not str(chat_id) in CHATS:
         return await cq.answer("Nothing is playing.")
-    data = cq.data
+
     if data == "pause":
         try:
             await app.pause_stream(chat_id)
@@ -85,10 +88,7 @@ async def callbacks(_, cq: CallbackQuery):
     elif data == "stop":
         await app.leave_group_call(chat_id)
         CHATS.clear()
-        await cq.answer("Stopped streaming.")
-
-    elif data == "close":
-        await cq.message.delete()           
+        await cq.answer("Stopped streaming.")           
 
 
 @bot.on_message(filters.command("play") & filters.group)
@@ -108,7 +108,7 @@ async def play(_, message):
         link = f"https://youtube.com{results[0]['url_suffix']}"
         thumb = results[0]["thumbnails"][0]
         yt = YouTube(link)
-        cap = "▶️ Playing..."
+        cap = f"▶️ <b>Playing</b> [{yt.title}]({link})"
         aud = yt.streams.get_by_itag(140).download()
     except Exception as e:
         return await m.edit(str(e))
