@@ -166,7 +166,7 @@ async def unmute(_, message):
         await message.reply_text("Nothing is playing.")
             
 
-app.start()   
-bot.run()
+app.start()
 LOGGER.info("Bot started.")
+bot.run()
 idle()
