@@ -73,8 +73,7 @@ async def play(_, message):
                 chat_id,
                 AudioPiped(aud)
             )
-            await message.reply_photo(thumbnail, caption="Playing...")
-            await m.delete()
+            await m.edit("Playing...")
             os.remove(aud)
         else:            
             await app.join_group_call(
@@ -82,8 +81,7 @@ async def play(_, message):
                 AudioPiped(aud)
             )
             CHATS.append(str(chat_id))
-            await message.reply_photo(thumbnail, caption="Playing...")
-            await m.delete()
+            await m.edit("Playing...")
             os.remove(aud)
     except Exception as e:
         return await m.edit(str(e))
