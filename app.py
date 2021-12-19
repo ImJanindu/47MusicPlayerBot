@@ -100,7 +100,7 @@ async def stream_video(_, message):
         results = YoutubeSearch(query, max_results=1).to_dict()
         link = f"https://youtube.com{results[0]['url_suffix']}"
         yt = YouTube(link)
-        vid = yt.streams.get_by_itag(22).download()
+        vid = yt.streams.get_by_itag(18).download()
     except Exception as e:
         return await m.edit(str(e))
     
