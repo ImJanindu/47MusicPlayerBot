@@ -2,10 +2,11 @@
 <h3 align = center>A Telegram bot that can play songs in Telegram group voice chats like AK47<br>
 (No queues)</h3>
 
-<h2 align="center">Deployment Methods 🏃‍♂</h2>
 <p align="center">
 <a href="https://python.org"><img src="http://forthebadge.com/images/badges/made-with-python.svg" alt="made-with-python"></a>
 </p>
+
+<h2 align="center">Deployment Methods 🏃‍♂</h2>
 
 <p align="center">
 <a href="https://dashboard.heroku.com/new?template=https://github.com/ImJanindu/47MusicPlayerBot"><img src="https://img.shields.io/badge/Deploy%20To%20Heroku-blueviolet?style=for-the-badge&logo=heroku" width="250"></a>  
