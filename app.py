@@ -143,8 +143,21 @@ async def volume(_, message):
     try:
         inputt = message.text.split(None, 1)[1]      
     except:
-       return await message.reply_text("<b>Usage:</b> <code>/volume [number from 1 to 200]</code>"
-    
+        return await message.reply_text("<b>Usage:</b> <code>/volume [number from 1 to 200]</code>")
+    try:
+        vol = int(inputt)
+    except:
+        return await message.reply_text("<b>Usage:</b> <code>/volume [number from 1 to 200]</code>")
+    chat_id = message.chat.id
+    try:
+        await app.change_volume_call(
+            chat_id,
+            vol,
+        )
+        await message.reply_text(f"Player volume changed to {vol}.")
+    except Exception as e:
+        return await message.reply_text(str(e))
+            
 
 app.start()   
 bot.run()
