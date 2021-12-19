@@ -57,10 +57,7 @@ BUTTONS = InlineKeyboardMarkup(
 
 
 @bot.on_callback_query()
-async def callbacks(_, cq: CallbackQuery):
-    user_id = cq.message.from_user.id
-    if user_id != OWNER_ID:
-        return
+async def callbacks(_, cq: CallbackQuery):    
     chat_id = cq.message.chat.id
     if not str(chat_id) in CHATS:
         return await cq.answer("Nothing is playing.")
