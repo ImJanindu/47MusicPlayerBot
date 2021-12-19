@@ -5,7 +5,7 @@
 <a href="https://python.org"><img src="http://forthebadge.com/images/badges/made-with-python.svg" alt="made-with-python"></a>
 </p>
 
-<h2 align="center">Deployment Methods</h2>
+<h2 align="center">Easy To Deploy</h2>
 
 <p align="center">
 <a href="https://dashboard.heroku.com/new?template=https://github.com/ImJanindu/47MusicPlayerBot"><img src="https://img.shields.io/badge/Deploy%20To%20Heroku-blueviolet?style=for-the-badge&logo=heroku" width="250" alt="Deploy"></a>  
@@ -21,14 +21,14 @@
 
 1. `API_ID` : Assistant account Telegram API_ID, get it from my.telegram.org
 2. `API_HASH` : Assistant account Telegram API_HASH, get it from my.telegram.org
-3. `BOT_TOKEN` : Your Telegram bot token, get it from @Botfather
-4. `SESSION_NAME` : Pyrogram session string of assistant account
-5. `OWNER_ID` : Your Telegram ID
+3. `BOT_TOKEN` : Your Telegram bot token, get it from @Botfather.
+4. `SESSION_NAME` : Pyrogram session string of assistant account.
+5. `OWNER_ID` : Your Telegram ID.
 
 ## License
 
 Distributed under the [MIT Licence.](https://github.com/ImJanindu/47MusicPlayer/blob/main/LICENSE) See `LICENSE.md` for more information.
 
-## Disclaimer
-
-This bot hasn't queues and only working in one Telegram group voice chat at one time.
+## Should Be Considered
+- No queues.
+- One voice chat at one time.
