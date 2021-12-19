@@ -51,7 +51,9 @@ BUTTONS = InlineKeyboardMarkup(
         [
             InlineKeyboardButton("⏸", callback_data="pause"),
             InlineKeyboardButton("▶️", callback_data="resume"),
-            InlineKeyboardButton("⏹", callback_data="stop")
+            InlineKeyboardButton("⏹", callback_data="stop"),
+            InlineKeyboardButton("🔇", callback_data="mute"),
+            InlineKeyboardButton("🔊", callback_data="unmute")
         ],
         [
             InlineKeyboardButton("🗑 Close Menu", callback_data="close")
@@ -88,7 +90,22 @@ async def callbacks(_, cq: CallbackQuery):
     elif data == "stop":
         await app.leave_group_call(chat_id)
         CHATS.clear()
-        await cq.answer("Stopped streaming.")           
+        await cq.answer("Stopped streaming.")  
+
+    elif data == "mute":
+        try:
+            await app.mute_stream(chat_id)
+            await cq.answer("Muted streaming.")
+        except:
+            await cq.answer("Nothing is playing.")
+            
+    elif data == "unmute":
+        try:
+            await app.unmute_stream(chat_id)
+            await cq.answer("Unmuted streaming.")
+        except:
+            await cq.answer("Nothing is playing.")
+            
 
 
 @bot.on_message(filters.command("play") & filters.group)
@@ -206,7 +223,7 @@ async def unmute(_, message):
     if str(chat_id) in CHATS:
         try:
             await app.unmute_stream(chat_id)
-            await message.reply_text("🔉 Unmuted streaming.")
+            await message.reply_text("🔊 Unmuted streaming.")
         except:
             await message.reply_text("❗Nothing is playing.")
     else:
