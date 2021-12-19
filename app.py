@@ -46,6 +46,39 @@ CHATS = []
 
 OWNER_ID = int(os.environ["OWNER_ID"])
 
+BUTTONS = InlineKeyboardMarkup(
+    [
+        [
+            InlineKeyboardButton("⏸ Pause", callback_data="pause"),
+            InlineKeyboardButton("▶️ Resume", callback_data="resume")
+        ]
+    ]
+)
+
+
+@bot.on_callback_query()
+async def callbacks(_, cq: CallbackQuery):
+    user_id = cq.message.from_user.id
+    if user_id != OWNER_ID:
+        return
+    chat_id = cq.message.chat.id
+    if not str(chat_id) in CHATS:
+        return await cq.answer("Nothing is playing.")
+    data = cq.data
+    if data == "pause":
+        try:
+            await app.pause_stream(chat_id)
+            await cq.answer("Paused streaming.")
+        except:
+            await cq.answer("Nothing is playing.")
+      
+    elif data == "resume"
+        try:
+            await app.resume_stream(chat_id)
+            await cq.answer("Resumed streaming.")
+        except:
+            await cq.answer("Nothing is playing.")                
+
 
 @bot.on_message(filters.command("play") & filters.group)
 async def play(_, message):
@@ -57,7 +90,7 @@ async def play(_, message):
     except:
         return await message.reply_text("<b>Usage:</b> <code>/play [query]</code>")
     chat_id = message.chat.id
-    m = await message.reply_text("Processing...")
+    m = await message.reply_text("🔄 Processing...")
     try:
         results = YoutubeSearch(query, max_results=1).to_dict()
         link = f"https://youtube.com{results[0]['url_suffix']}"
@@ -72,7 +105,7 @@ async def play(_, message):
                 chat_id,
                 AudioPiped(aud)
             )
-            await m.edit("Playing...")
+            await m.edit("▶️ Playing...")
             os.remove(aud)
         else:            
             await app.join_group_call(
@@ -80,7 +113,7 @@ async def play(_, message):
                 AudioPiped(aud)
             )
             CHATS.append(str(chat_id))
-            await m.edit("Playing...")
+            await m.edit("▶️ Playing...")
             os.remove(aud)
     except Exception as e:
         return await m.edit(str(e))
@@ -95,9 +128,9 @@ async def end(_, message):
     if str(chat_id) in CHATS:
         await app.leave_group_call(chat_id)
         CHATS.clear()
-        await message.reply_text("Stopped streaming.")
+        await message.reply_text("⏹ Stopped streaming.")
     else:
-        await message.reply_text("Nothing is playing.")
+        await message.reply_text("❗Nothing is playing.")
         
 
 @bot.on_message(filters.command("pause") & filters.group)
@@ -109,11 +142,11 @@ async def pause(_, message):
     if str(chat_id) in CHATS:
         try:
             await app.pause_stream(chat_id)
-            await message.reply_text("Paused streaming.")
+            await message.reply_text("⏸ Paused streaming.")
         except:
-            await message.reply_text("Nothing is playing.")
+            await message.reply_text("❗Nothing is playing.")
     else:
-        await message.reply_text("Nothing is playing.")
+        await message.reply_text("❗Nothing is playing.")
         
         
 @bot.on_message(filters.command("resume") & filters.group)
@@ -125,11 +158,11 @@ async def resume(_, message):
     if str(chat_id) in CHATS:
         try:
             await app.resume_stream(chat_id)
-            await message.reply_text("Resumed streaming.")
+            await message.reply_text("⏸ Resumed streaming.")
         except:
-            await message.reply_text("Nothing is playing.")
+            await message.reply_text("❗Nothing is playing.")
     else:
-        await message.reply_text("Nothing is playing.")
+        await message.reply_text("❗Nothing is playing.")
         
         
 @bot.on_message(filters.command("mute") & filters.group)
@@ -141,11 +174,11 @@ async def mute(_, message):
     if str(chat_id) in CHATS:
         try:
             await app.mute_stream(chat_id)
-            await message.reply_text("Muted streaming.")
+            await message.reply_text("🔇 Muted streaming.")
         except:
-            await message.reply_text("Nothing is playing.")
+            await message.reply_text("❗Nothing is playing.")
     else:
-        await message.reply_text("Nothing is playing.")
+        await message.reply_text("❗Nothing is playing.")
         
         
 @bot.on_message(filters.command("unmute") & filters.group)
@@ -157,11 +190,11 @@ async def unmute(_, message):
     if str(chat_id) in CHATS:
         try:
             await app.unmute_stream(chat_id)
-            await message.reply_text("Unmuted streaming.")
+            await message.reply_text("🔉 Unmuted streaming.")
         except:
-            await message.reply_text("Nothing is playing.")
+            await message.reply_text("❗Nothing is playing.")
     else:
-        await message.reply_text("Nothing is playing.")
+        await message.reply_text("❗Nothing is playing.")
             
 
 app.start()
