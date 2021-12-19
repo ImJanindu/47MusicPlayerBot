@@ -46,6 +46,13 @@ CHATS = []
 
 OWNER_ID = int(os.environ["OWNER_ID"])
 
+START_TEXT = """
+Hi <b>{}</b> 👋
+I'm a Telegram group voice chat music player bot. Only my owner can operate me.
+
+<i>Make your own bot from source code.</i>
+"""
+
 START_BUTTONS = InlineKeyboardMarkup(
     [
         [
@@ -116,6 +123,17 @@ async def callbacks(_, cq: CallbackQuery):
             await cq.answer("Nothing is playing.")
             
 
+@bot.on_message(filters.command("start") & filters.private)
+async def start_private(_, message):
+    msg = START_TEXT.format(message.from_user.mention)
+    await message.reply_text(text = msg,
+                             reply_markup = START_BUTTONS)
+    
+
+@bot.on_message(filters.command("start") & filters.group)
+async def start_group(_, message):
+    await message.reply_text("<i>🎧 Music player is online.</i>")
+    
 
 @bot.on_message(filters.command("play") & filters.group)
 async def play(_, message):
