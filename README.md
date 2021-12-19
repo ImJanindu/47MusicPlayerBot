@@ -21,7 +21,7 @@
 
 1. `API_ID` : Assistant account Telegram API_ID, get it from my.telegram.org
 2. `API_HASH` : Assistant account Telegram API_HASH, get it from my.telegram.org
-3. `BOT_TOKEN` : Your Telegram bot token, get it from @Botfather.
+3. `BOT_TOKEN` : Your Telegram bot token, get it from @BotFather.
 4. `SESSION_NAME` : Pyrogram session string of assistant account.
 5. `OWNER_ID` : Your Telegram ID.
 
