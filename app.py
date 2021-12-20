@@ -25,6 +25,7 @@ SOFTWARE.
 import os
 import logging
 from downloader import download
+from converter import convert
 from youtube_search import YoutubeSearch
 from pytgcalls import PyTgCalls, idle
 from pytgcalls.types import AudioPiped, AudioVideoPiped, GroupCall
@@ -154,7 +155,7 @@ async def play(_, message):
         duration = results[0]["duration"]
         title = results[0]["title"][:100]
         cap = f"▶️ <b>Playing:</b> [{title}]({url}) \n\n⏳ <b>Duration:</b> {duration}"
-        aud = await download(url)
+        aud = await convert(download(url))
     except Exception as e:
         return await m.edit(str(e))
     
