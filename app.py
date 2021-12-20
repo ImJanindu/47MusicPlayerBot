@@ -156,7 +156,11 @@ async def play(_, message):
         cap = f"▶️ <b>Playing:</b> [{yt.title}]({link}) \n\n⏳ <b>Duration:</b> {duration}"
         aud = yt.streams.get_by_itag(140).download()
     except Exception as e:
-        return await m.edit(str(e))
+        if "Too Many Requests" in str(e):
+            await m.edit("❗️<i>Please wait at least 30 seconds to use me.</i>")
+            os.system(f"kill -9 {os.getpid()} && python3 app.py")
+        else:
+            return await m.edit(str(e))
     
     try:
         if str(chat_id) in CHATS:
