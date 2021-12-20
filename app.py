@@ -132,7 +132,7 @@ async def start_private(_, message):
 
 @bot.on_message(filters.command("start") & filters.group)
 async def start_group(_, message):
-    await message.reply_text("<i>🎧 Music player is running.</i>")
+    await message.reply_text("🎧 <i>Music player is running.</i>")
     
 
 @bot.on_message(filters.command("play") & filters.group)
@@ -265,11 +265,10 @@ async def unmute(_, message):
         
 @bot.on_message(filters.command("restart"))
 async def restart(_, message):
-    await message.delete()
     user_id = message.from_user.id
     if user_id != OWNER_ID:
         return
-    await message.reply_text("🛠 Restarting Bot...")
+    await message.reply_text("🛠 <i>Restarting Music Player...</i>")
     os.system(f"kill -9 {os.getpid()} && python3 app.py")
             
 
