@@ -1,5 +1,5 @@
 <h2 align= center><b>🎧 47Music Player 🎧</b></h2>
-<h4 align = center>A Powerful and Simple Telegram Bot<br> that can play songs in Telegram group voice chats like AK 47 ✨</h4>
+<h4 align = center>A Powerful and Simple Telegram Bot<br> that can play songs in Telegram group voice chats like AK 47</h4>
 
 <p align='center'>
 <a href="https://www.python.org/" alt="made-with-python"> <img src="https://img.shields.io/badge/Made%20with-Python-1f425f.svg?style=flat-square&logo=python&color=blue"></a>
