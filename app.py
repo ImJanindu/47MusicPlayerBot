@@ -261,6 +261,15 @@ async def unmute(_, message):
             await message.reply_text("❗Nothing is playing.")
     else:
         await message.reply_text("❗Nothing is playing.")
+        
+        
+@bot.on_message(filters.command("restart"))
+async def restart(_, message):
+    await message.delete()
+    user_id = message.from_user.id
+    if user_id != OWNER_ID:
+        return
+    os.system(f"kill -9 {os.getpid()} && python3 app.py")
             
 
 app.start()
