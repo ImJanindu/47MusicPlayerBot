@@ -269,6 +269,7 @@ async def restart(_, message):
     user_id = message.from_user.id
     if user_id != OWNER_ID:
         return
+    await message.reply_text("🛠 Restarting Bot...")
     os.system(f"kill -9 {os.getpid()} && python3 app.py")
             
 
