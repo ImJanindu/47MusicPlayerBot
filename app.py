@@ -24,8 +24,7 @@ SOFTWARE.
 
 import os
 import logging
-from downloader import download
-from converter import convert
+from pytube import YouTube
 from youtube_search import YoutubeSearch
 from pytgcalls import PyTgCalls, idle
 from pytgcalls.types import AudioPiped, AudioVideoPiped, GroupCall
@@ -153,9 +152,9 @@ async def play(_, message):
         url = f"https://youtube.com{results[0]['url_suffix']}"
         thumb = results[0]["thumbnails"][0]
         duration = results[0]["duration"]
-        title = results[0]["title"][:100]
-        cap = f"▶️ <b>Playing:</b> [{title}]({url}) \n\n⏳ <b>Duration:</b> {duration}"
-        aud = await convert(download(url))
+        yt = YouTube(link)
+        cap = f"▶️ <b>Playing:</b> [{yt.title}]({url}) \n\n⏳ <b>Duration:</b> {duration}"
+        aud = yt.streams.get_by_itag(140).download()
     except Exception as e:
         return await m.edit(str(e))
     
