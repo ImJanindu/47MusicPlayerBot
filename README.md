@@ -5,7 +5,7 @@
 <a href="https://www.python.org/" alt="made-with-python"> <img src="https://img.shields.io/badge/Made%20with-Python-1f425f.svg?style=flat-square&logo=python&color=blue"></a>
 <a href="https://github.com/ImJanindu/47MusicPlayerBot/graphs/commit-activity" alt="Maintenance"> <img src="https://img.shields.io/badge/Maintained%3F-yes-green.svg?style=flat-square"></a></p>
 
-<p align="center"><a href="https://t.me/JaguarBots"><img src="https://telegra.ph/file/4c03ff6d25fc678a2fe08.jpg" height="300" width="300" alt="Music Player"></p>
+<p align="center"><a href="https://t.me/JaguarBots"><img src="https://telegra.ph/file/4c03ff6d25fc678a2fe08.jpg" height="300" width="310" alt="Music Player"></p>
 
 ## ✨ Heroku Deploy
 
