@@ -25,14 +25,15 @@
 
 ## ℹ️ Commands
 
-| Command | Description                                          |
-| ------- | ---------------------------------------------------- |
-| /play   | play the given song name or YouTube video link       |
-| /pause  | pause the audio stream                               |
-| /resume | resume the audio stream                              |
-| /mute   | mute the userbot                                     |
-| /unmute | unmute the userbot                                   |
-| /stop   | stop streaming and remove the userbot from the call  |
+| Command  | Description                                          |
+| -------  | ---------------------------------------------------- |
+| /play    | play the given song name or YouTube video link       |
+| /pause   | pause the audio stream                               |
+| /resume  | resume the audio stream                              |
+| /mute    | mute the userbot                                     |
+| /unmute  | unmute the userbot                                   |
+| /stop    | stop streaming and remove the userbot from the call  |
+| /restart | restart the bot
 
 ## ❤️ Support
 
