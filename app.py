@@ -149,11 +149,11 @@ async def play(_, message):
     m = await message.reply_text("🔄 Processing...")
     try:
         results = YoutubeSearch(query, max_results=1).to_dict()
-        url = f"https://youtube.com{results[0]['url_suffix']}"
+        link = f"https://youtube.com{results[0]['url_suffix']}"
         thumb = results[0]["thumbnails"][0]
         duration = results[0]["duration"]
         yt = YouTube(link)
-        cap = f"▶️ <b>Playing:</b> [{yt.title}]({url}) \n\n⏳ <b>Duration:</b> {duration}"
+        cap = f"▶️ <b>Playing:</b> [{yt.title}]({link}) \n\n⏳ <b>Duration:</b> {duration}"
         aud = yt.streams.get_by_itag(140).download()
     except Exception as e:
         return await m.edit(str(e))
