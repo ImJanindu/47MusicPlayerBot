@@ -37,7 +37,7 @@
 
 ## ❤️ Support
 
-<a href="https://t.me/JaguarBotsChat"><img src="https://img.shields.io/badge/Join-Telegram%20Group-blue.svg?logo=telegram" alt="Group"></a><br>
+<a href="https://t.me/JaguarBotsChat"><img src="https://img.shields.io/badge/Join-Telegram%20Group-blue.svg?logo=telegram" alt="Group"></a>
 <a href="https://t.me/JaguarBots"><img src="https://img.shields.io/badge/Join-Telegram%20Channel-red.svg?logo=Telegram" alt="Channel"></a>
 
 ## 📄 License
