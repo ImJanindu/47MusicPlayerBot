@@ -153,7 +153,7 @@ async def music_play(_, message):
         thumb = results[0]["thumbnails"][0]
         duration = results[0]["duration"]
         yt = YouTube(link)
-        cap = f"▶️ <b>Playing:</b> [{yt.title}]({link}) \n\n⏳ <b>Duration:</b> {duration}"
+        cap = f"🎵 <b>Playing:</b> [{yt.title}]({link}) \n\n⏳ <b>Duration:</b> {duration}"
         aud = yt.streams.get_by_itag(140).download()
     except Exception as e:
         if "Too Many Requests" in str(e):
@@ -202,7 +202,7 @@ async def video_play(_, message):
         thumb = results[0]["thumbnails"][0]
         duration = results[0]["duration"]
         yt = YouTube(link)
-        cap = f"▶️ <b>Playing:</b> [{yt.title}]({link}) \n\n⏳ <b>Duration:</b> {duration}"
+        cap = f"🎬 <b>Playing:</b> [{yt.title}]({link}) \n\n⏳ <b>Duration:</b> {duration}"
         vid = yt.streams.get_by_itag(22).download()
     except Exception as e:
         if "Too Many Requests" in str(e):
