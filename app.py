@@ -203,17 +203,18 @@ async def video_play(_, message):
     try:
         results = YoutubeSearch(query, max_results=1).to_dict()
         link = f"https://youtube.com{results[0]['url_suffix']}"
+        ytid = link.split("=")[1]
         thumb = results[0]["thumbnails"][0]
         duration = results[0]["duration"]
         yt = YouTube(link)
         cap = f"🎬 <b>Playing:</b> [{yt.title}]({link}) \n\n⏳ <b>Duration:</b> {duration}"
-        vid = yt.streams.get_by_itag(22).download()
+        ydl_opts = {'format': 'bv*[height<=480]+ba/b[height<=480] / wv*+ba/w'}
+        with YoutubeDL(ydl_opts) as ydl:
+            ydl.download([link])
+
+        vid = glob.glob(f"*{ytid}*")[0]            
     except Exception as e:
-        if "Too Many Requests" in str(e):
-            await m.edit("❗️<i>Please wait at least 30 seconds to use me.</i>")
-            os.system(f"kill -9 {os.getpid()} && python3 app.py")
-        else:
-            return await m.edit(str(e))
+        return await m.edit(str(e))
     
     try:
         if str(chat_id) in CHATS:
