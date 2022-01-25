@@ -239,7 +239,7 @@ async def video_play(_, message):
         return await m.edit(str(e))
     
     
-@bot.on_message(filters.command("stream") & filters.group)
+@bot.on_message(filters.command(["saudio", "svideo"]) & filters.group)
 async def stream_func(_, message):
     await message.delete()
     user_id = message.from_user.id
@@ -250,6 +250,11 @@ async def stream_func(_, message):
     except:
         return await message.reply_text("<b>Usage:</b> <code>/stream [link]</code>")
     chat_id = message.chat.id
+    state = message.command[0].lower()
+    if state == "saudio":
+        damn = AudioPiped
+    elif state == "svideo":
+        damn = AudioVideoPiped
     m = await message.reply_text("🔄 Processing...")
     try:
         if str(chat_id) in CHATS:
@@ -257,7 +262,7 @@ async def stream_func(_, message):
         else:    
             await app.join_group_call(
                 chat_id,
-                AudioVideoPiped(link),
+                damn(link),
                 stream_type=StreamType().pulse_stream)
             CHATS.append(str(chat_id))
             await m.edit(f"✅ Started streaming: [Link]({link})", disable_web_page_preview=True)
