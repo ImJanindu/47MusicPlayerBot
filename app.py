@@ -253,16 +253,14 @@ async def stream_func(_, message):
     m = await message.reply_text("🔄 Processing...")
     try:
         if str(chat_id) in CHATS:
-            await app.change_stream(
-                chat_id,
-                AudioVideoPiped(link),
-                stream_type=StreamType().pulse_stream)
+            await m.edit("❗️Voice chat is already running, please <code>/stop</code> it and then try again!")
         else:    
             await app.join_group_call(
                 chat_id,
                 AudioVideoPiped(link),
                 stream_type=StreamType().pulse_stream)
             CHATS.append(str(chat_id))
+            await m.edit(f"✅ Started streaming: [Link]({link})", disable_web_page_preview=True)
     except Exception as e:
         return await m.edit(str(e))    
     
