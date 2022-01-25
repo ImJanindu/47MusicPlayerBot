@@ -8,10 +8,10 @@
 <p align="center"><a href="https://t.me/JaguarBots"><img src="https://telegra.ph/file/4c03ff6d25fc678a2fe08.jpg" height="300" width="310" alt="Music Player"></p>
 
 ## ✨ Heroku Deploy
-- Fork the repo and deploy via forked repo (Else you will not able to deploy)
+- Fork the repo and change template link to forked repo link (Else you will not able to deploy)
 - Change the app region to Europe (it will help to make the bot stable)
   
-<p align="left"><a href="https://heroku.com/deploy"><img src="https://img.shields.io/badge/Deploy%20To%20Heroku-blueviolet?style=for-the-badge&logo=heroku" width="250" alt="Deploy"></a></p>
+<p align="left"><a href="https://dashboard.heroku.com/new?template=https://github.com/ImJanindu/47MusicPlayerBot"><img src="https://img.shields.io/badge/Deploy%20To%20Heroku-blueviolet?style=for-the-badge&logo=heroku" width="250" alt="Deploy"></a></p>
 
 ## 🏃‍♂ Pyrogram Session
 
