@@ -25,6 +25,7 @@ SOFTWARE.
 import os
 import glob
 import logging
+from pytgcalls import StreamType
 from yt_dlp import YoutubeDL
 from pytube import YouTube
 from youtube_search import YoutubeSearch
@@ -236,6 +237,34 @@ async def video_play(_, message):
             os.remove(vid)
     except Exception as e:
         return await m.edit(str(e))
+    
+    
+@bot.on_message(filters.command("stream") & filters.group)
+async def stream_func(_, message):
+    await message.delete()
+    user_id = message.from_user.id
+    if user_id != OWNER_ID:
+        return
+    try:
+        link = message.text.split(None, 1)[1]
+    except:
+        return await message.reply_text("<b>Usage:</b> <code>/stream [link]</code>")
+    chat_id = message.chat.id
+    m = await message.reply_text("🔄 Processing...")
+    try:
+        if str(chat_id) in CHATS:
+            await app.change_stream(
+                chat_id,
+                AudioVideoPiped(link),
+                stream_type=StreamType().pulse_stream)
+        else:    
+            await app.join_group_call(
+                chat_id,
+                AudioVideoPiped(link),
+                stream_type=StreamType().pulse_stream)
+            CHATS.append(str(chat_id))
+    except Exception as e:
+        return await m.edit(str(e))    
     
 
 @bot.on_message(filters.command("stop") & filters.group)
