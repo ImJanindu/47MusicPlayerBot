@@ -30,7 +30,8 @@ Change the app region to Europe (it will help to make the bot stable)
 | -------  | ---------------------------------------------------- |
 | /play    | play the given query or YouTube link as audio        |
 | /video   | play the given query or YouTube link as video        |
-| /stream  | stream HTTP link                                     |
+| /saudio  | stream HTTP audio link                               |
+| /svideo  | stream HTTP video link                               |
 | /pause   | pause the audio stream                               |
 | /resume  | resume the audio stream                              |
 | /mute    | mute the userbot                                     |
