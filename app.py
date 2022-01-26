@@ -151,11 +151,9 @@ async def on_end_handler(_, update: Update):
         try:
             await message.reply_photo(photo = dd[4],
                     f"▶️ Now playing:</b> [{dd[0]}]({dd[1]}) | `{dd[2]}` \n\n⏳ <b>Duration:</b> {op[3]}",
-                    disable_web_page_preview=True,
-                )
+                    disable_web_page_preview=True)
         except:
-            pass
-        
+            pass    
 
 
 @app.on_stream_end()
@@ -166,8 +164,7 @@ async def on_end_handler(_, update: Update):
         try:
             await message.reply_photo(photo = dd[4],
                     f"▶️ Now playing:</b> [{dd[0]}]({dd[1]}) | `{dd[2]}` \n\n⏳ <b>Duration:</b> {op[3]}",
-                    disable_web_page_preview=True,
-                )
+                    disable_web_page_preview=True)
         except:
             pass
 
