@@ -31,8 +31,8 @@
 | -------  | ---------------------------------------------------- |
 | /play    | play the given query or YouTube link as audio        |
 | /video   | play the given query or YouTube link as video        |
-| /saudio  | stream HTTP audio link                               |
-| /svideo  | stream HTTP video link                               |
+| /saudio  | stream m3u8 or live stream audio link                |
+| /svideo  | stream m3u8 or live stream video link                |
 | /pause   | pause the audio stream                               |
 | /resume  | resume the audio stream                              |
 | /mute    | mute the userbot                                     |
