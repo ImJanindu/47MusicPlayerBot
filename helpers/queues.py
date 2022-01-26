@@ -1,13 +1,13 @@
 QUEUE = {}
 
 
-def add_to_queue(chat_id, title, duration, ytlink, playlink):
+def add_to_queue(chat_id, title, duration, ytlink, playlink, type, quality):
     if chat_id in QUEUE:
         chat_queue = QUEUE[chat_id]
-        chat_queue.append([title, duration, ytlink, playlink])
+        chat_queue.append([title, duration, ytlink, playlink, type, quality])
         return int(len(chat_queue) - 1)
     else:
-        QUEUE[chat_id] = [[title, duration, ytlink, playlink]]
+        QUEUE[chat_id] = [[title, duration, ytlink, playlink, type, quality]]
 
 
 def get_queue(chat_id):
