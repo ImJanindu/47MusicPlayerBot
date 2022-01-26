@@ -124,7 +124,7 @@ async def skip_current_song(chat_id):
                 )
             pop_an_item(chat_id)
             await bot.send_photo(chat_id, photo = thumb,
-                                 caption = f"▶️ Now playing:</b> [{title}]({link}) | `{type}` \n\n⏳ <b>Duration:</b> {duration}",
+                                 caption = f"▶️ <b>Now playing:</b> [{title}]({link}) | `{type}` \n\n⏳ <b>Duration:</b> {duration}",
                                  reply_markup = BUTTONS)
             return [title, link, type, duration, thumb]
     else:
@@ -256,7 +256,7 @@ async def start_group(_, message):
     await message.reply_text("🎧 <i>Music player is running.</i>")
     
     
-@bot.on_message(filters.command(["play", "video"]) & filters.group)
+@bot.on_message(filters.command(["play", "vplay"]) & filters.group)
 async def video_play(_, message):
     await message.delete()
     user_id = message.from_user.id
@@ -355,6 +355,7 @@ async def stream_func(_, message):
 
 
 @bot.on_message(filters.command("skip") & filters.group)
+@is_admin
 async def skip(_, message):
     await message.delete()
     chat_id = message.chat.id
@@ -383,6 +384,7 @@ async def skip(_, message):
             
             
 @bot.on_message(filters.command(["playlist", "queue"]) & filters.group)
+@is_admin
 async def playlist(_, message):
     chat_id = message.chat.id
     if chat_id in QUEUE:
@@ -407,6 +409,7 @@ async def playlist(_, message):
     
 
 @bot.on_message(filters.command("stop") & filters.group)
+@is_admin
 async def end(_, message):
     await message.delete()
     user_id = message.from_user.id
@@ -422,6 +425,7 @@ async def end(_, message):
         
 
 @bot.on_message(filters.command("pause") & filters.group)
+@is_admin
 async def pause(_, message):
     await message.delete()
     user_id = message.from_user.id
@@ -439,6 +443,7 @@ async def pause(_, message):
         
         
 @bot.on_message(filters.command("resume") & filters.group)
+@is_admin
 async def resume(_, message):
     await message.delete()
     user_id = message.from_user.id
@@ -456,6 +461,7 @@ async def resume(_, message):
         
         
 @bot.on_message(filters.command("mute") & filters.group)
+@is_admin
 async def mute(_, message):
     await message.delete()
     user_id = message.from_user.id
@@ -473,6 +479,7 @@ async def mute(_, message):
         
         
 @bot.on_message(filters.command("unmute") & filters.group)
+@is_admin
 async def unmute(_, message):
     await message.delete()
     user_id = message.from_user.id
