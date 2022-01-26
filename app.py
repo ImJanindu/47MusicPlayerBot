@@ -78,6 +78,7 @@ BUTTONS = InlineKeyboardMarkup(
         [
             InlineKeyboardButton("⏸", callback_data="pause"),
             InlineKeyboardButton("▶️", callback_data="resume"),
+            InlineKeyboardButton("⏭", callback_data="skip"),
             InlineKeyboardButton("⏹", callback_data="stop"),
             InlineKeyboardButton("🔇", callback_data="mute"),
             InlineKeyboardButton("🔊", callback_data="unmute")
@@ -242,6 +243,15 @@ async def callbacks(_, cq: CallbackQuery):
             await cq.answer("Unmuted streaming.")
         except:
             await cq.answer("Nothing is playing.")
+            
+    elif data == "skip":
+        op = await skip_current_song(chat_id)
+        if op == 0:
+            await cq.answer("Nothing in the queue to skip.")
+        elif op == 1:
+            await cq.answer("Empty queue, stopped streaming.")
+        else:
+            await cq.answer("Skipped.")
             
 
 @bot.on_message(filters.command("start") & filters.private)
