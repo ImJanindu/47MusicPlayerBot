@@ -123,7 +123,7 @@ async def skip_current_song(chat_id):
                     chat_id, AudioVideoPiped(playlink, HighQualityAudio(), hm)
                 )
             pop_an_item(chat_id)
-            await bot.send_photo(chat_id, photo = f"{dd[4]}",
+            await bot.send_photo(chat_id, photo = thumb,
                                  caption = f"▶️ Now playing:</b> [{title}]({link}) | `{type}` \n\n⏳ <b>Duration:</b> {duration}",
                                  disable_web_page_preview=True)
             return [title, link, type, duration, thumb]
@@ -368,7 +368,7 @@ async def skip(_, message):
             await message.reply_text("❗️Empty queue, stopped streaming.")
         else:
             await message.reply_text(
-                f"⏭ <b>Skipped! \n\n▶️ Now playing:</b> [{op[0]}]({op[1]}) | `{op[2]}` \n\n⏳ <b>Duration:</b> {op[3]}",
+                f"⏭ Skipped current song.",
                 disable_web_page_preview=True,
             )
     else:
@@ -389,7 +389,7 @@ async def skip(_, message):
             await message.reply_text(out)
             
             
-@Client.on_message(filters.command(["playlist", "queue"]) & filters.group)
+@bot.on_message(filters.command(["playlist", "queue"]) & filters.group)
 async def playlist(_, message):
     chat_id = message.chat.id
     if chat_id in QUEUE:
