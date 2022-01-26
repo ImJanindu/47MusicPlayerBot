@@ -271,12 +271,10 @@ async def video_play(_, message):
     if state == "play":
         damn = AudioPiped
         ded = yt_audio
-        emj = "🎵"
         doom = "Audio"
     elif state == "video":
         damn = AudioVideoPiped
         ded = yt_video
-        emj = "🎬"
         doom = "Video"
     if "low" in query:
         Q = "low"
@@ -292,7 +290,7 @@ async def video_play(_, message):
         thumb = results[0]["thumbnails"][0]
         duration = results[0]["duration"]
         yt = YouTube(link)
-        cap = f"{emj} <b>Now playing:</b> [{yt.title}]({link}) \n\n⏳ <b>Duration:</b> {duration}"
+        cap = f"▶️ <b>Now playing:</b> [{yt.title}]({link}) | `{doom}` \n\n⏳ <b>Duration:</b> {duration}"
         ice, playlink = await ded(link)
         if ice == "0":
             return await m.edit("❗️YTDL ERROR !!!")             
@@ -365,11 +363,6 @@ async def skip(_, message):
             await message.reply_text("❗️Nothing in the queue to skip.")
         elif op == 1:
             await message.reply_text("❗️Empty queue, stopped streaming.")
-        else:
-            await message.reply_text(
-                f"⏭ Skipped current song.",
-                disable_web_page_preview=True,
-            )
     else:
         skip = message.text.split(None, 1)[1]
         out = "🗑 <b>Removed the following song(s) from the queue:</b> \n"
@@ -405,7 +398,7 @@ async def playlist(_, message):
             for x in range(1, l):
                 hmm = chat_queue[x][0]
                 hmmm = chat_queue[x][2]
-                hmmmm = chat_queue[x][3]
+                hmmmm = chat_queue[x][4]
                 out = out + "\n" + f"<b>#️⃣ {x}</b> - [{hmm}]({hmmm}) | `{hmmmm}` \n"
             await message.reply_text(out, disable_web_page_preview=True)
     else:
