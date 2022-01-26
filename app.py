@@ -31,6 +31,7 @@ from pytube import YouTube
 from youtube_search import YoutubeSearch
 from pytgcalls import PyTgCalls, idle
 from pytgcalls.types import Update
+from pyrogram.raw.base import Update
 from pytgcalls.types import AudioPiped, AudioVideoPiped
 from pytgcalls.types import (
     HighQualityAudio,
@@ -61,7 +62,7 @@ Hi <b>{}</b> 👋
 
 I can play music & stream videos in Telegram group voice chats. 
 
-<i>Only my owner can operate me. Make your own bot from the source code.</i>
+Make your own bot using below source code.
 """
 
 START_BUTTONS = InlineKeyboardMarkup(
@@ -201,9 +202,19 @@ async def yt_audio(link):
 
 
 @bot.on_callback_query()
-async def callbacks(_, cq: CallbackQuery): 
-    if cq.from_user.id != OWNER_ID:
-        return await cq.answer("You aren't the owner of me.")   
+async def callbacks(_, cq: CallbackQuery):
+    user_id = cq.from_user.id
+    try:
+        user = await message.chat.get_member(user_id)
+        admin_strings = ("creator", "administrator")
+        if user.status not in admin_strings:
+            is_admin = False
+        else:
+            is_admin = True
+    except ValueError:
+        is_admin = True        
+    if not is_admin:
+        return await cq.answer("You aren't an admin.")   
     chat_id = cq.message.chat.id
     data = cq.data
     if data == "close":
