@@ -387,6 +387,30 @@ async def skip(_, message):
                     else:
                         out = out + "\n" + f"<b>#️⃣ {x}</b> - {hm}"
             await message.reply_text(out)
+            
+            
+@Client.on_message(filters.command(["playlist", "queue"]) & filters.group)
+async def playlist(_, message):
+    chat_id = message.chat.id
+    if chat_id in QUEUE:
+        chat_queue = get_queue(chat_id)
+        if len(chat_queue) == 1:
+            await message.delete()
+            await message.reply_text(
+                f"▶️ <b>Now playing:</b> [{chat_queue[0][0]}]({chat_queue[0][2]}) | `{chat_queue[0][3]}`",
+                disable_web_page_preview=True,
+            )
+        else:
+            out = f"▶️ <b>Now playing:</b> [{chat_queue[0][0]}]({chat_queue[0][2]}) | `{chat_queue[0][3]}` \n\n<b>📃 Playlist:</b> \n"
+            l = len(chat_queue)
+            for x in range(1, l):
+                hmm = chat_queue[x][0]
+                hmmm = chat_queue[x][2]
+                hmmmm = chat_queue[x][3]
+                out = out + "\n" + f"<b>#️⃣ {x}</b> - [{hmm}]({hmmm}) | `{hmmmm}` \n"
+            await message.reply_text(out, disable_web_page_preview=True)
+    else:
+        await message.reply_text("❗Nothing is playing.")
     
 
 @bot.on_message(filters.command("stop") & filters.group)
