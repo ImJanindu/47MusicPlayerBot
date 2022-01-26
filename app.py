@@ -124,8 +124,7 @@ async def skip_current_song(chat_id):
                 )
             pop_an_item(chat_id)
             await bot.send_photo(chat_id, photo = thumb,
-                                 caption = f"▶️ Now playing:</b> [{title}]({link}) | `{type}` \n\n⏳ <b>Duration:</b> {duration}",
-                                 disable_web_page_preview=True)
+                                 caption = f"▶️ Now playing:</b> [{title}]({link}) | `{type}` \n\n⏳ <b>Duration:</b> {duration}")
             return [title, link, type, duration, thumb]
     else:
         return 0
