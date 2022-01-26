@@ -326,7 +326,7 @@ async def video_play(_, message):
     try:
         if chat_id in QUEUE:
             position = add_to_queue(chat_id, yt.title, duration, link, playlink, doom, Q, thumb)
-            caps = f"#️⃣ [{yt.title}]({link}) <b>queued at position:</b> {position} \n\n⏳ <b>Duration:</b> {duration}"
+            caps = f"#️⃣ [{yt.title}]({link}) <b>queued at position {position}</b> \n\n⏳ <b>Duration:</b> {duration}"
             await message.reply_photo(thumb, caption=caps)
             await m.delete()
         else:            
