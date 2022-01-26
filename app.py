@@ -25,8 +25,8 @@ SOFTWARE.
 import os
 import glob
 import logging
+import asyncio
 from pytgcalls import StreamType
-from yt_dlp import YoutubeDL
 from pytube import YouTube
 from youtube_search import YoutubeSearch
 from pytgcalls import PyTgCalls, idle
@@ -80,6 +80,41 @@ BUTTONS = InlineKeyboardMarkup(
         ]
     ]
 )
+
+async def yt_video(link):
+    proc = await asyncio.create_subprocess_exec(
+        "yt-dlp",
+        "-g",
+        "-f",
+        # CHANGE THIS BASED ON WHAT YOU WANT
+        "best[height<=?480][width<=?720]",
+        f"{link}",
+        stdout=asyncio.subprocess.PIPE,
+        stderr=asyncio.subprocess.PIPE,
+    )
+    stdout, stderr = await proc.communicate()
+    if stdout:
+        return 1, stdout.decode().split("\n")[0]
+    else:
+        return 0, stderr.decode()
+    
+
+async def yt_audio(link):
+    proc = await asyncio.create_subprocess_exec(
+        "yt-dlp",
+        "-g",
+        "-f",
+        # CHANGE THIS BASED ON WHAT YOU WANT
+        "bestaudio",
+        f"{link}",
+        stdout=asyncio.subprocess.PIPE,
+        stderr=asyncio.subprocess.PIPE,
+    )
+    stdout, stderr = await proc.communicate()
+    if stdout:
+        return 1, stdout.decode().split("\n")[0]
+    else:
+        return 0, stderr.decode()
 
 
 @bot.on_callback_query()
@@ -138,103 +173,60 @@ async def start_private(_, message):
 async def start_group(_, message):
     await message.reply_text("🎧 <i>Music player is running.</i>")
     
-
-@bot.on_message(filters.command("play") & filters.group)
-async def music_play(_, message):
-    await message.delete()
-    user_id = message.from_user.id
-    if user_id != OWNER_ID:
-        return
-    try:
-        query = message.text.split(None, 1)[1]
-    except:
-        return await message.reply_text("<b>Usage:</b> <code>/play [query]</code>")
-    chat_id = message.chat.id
-    m = await message.reply_text("🔄 Processing...")
-    try:
-        results = YoutubeSearch(query, max_results=1).to_dict()
-        link = f"https://youtube.com{results[0]['url_suffix']}"
-        thumb = results[0]["thumbnails"][0]
-        duration = results[0]["duration"]
-        ytid = link.split("=")[1]
-        yt = YouTube(link)
-        cap = f"🎵 <b>Playing:</b> [{yt.title}]({link}) \n\n⏳ <b>Duration:</b> {duration}"
-        ydl_opts = {'format': 'ba[ext=m4a]'}
-        with YoutubeDL(ydl_opts) as ydl:
-            ydl.download([link])
-        
-        aud = glob.glob(f"*{ytid}*")[0]
-    except Exception as e:
-        return await m.edit(str(e))
     
-    try:
-        if str(chat_id) in CHATS:
-            await app.change_stream(
-                chat_id,
-                AudioPiped(aud)
-            )
-            await message.reply_photo(thumb, caption=cap, reply_markup=BUTTONS)
-            await m.delete()
-            os.remove(aud)
-        else:            
-            await app.join_group_call(
-                chat_id,
-                AudioPiped(aud)
-            )
-            CHATS.append(str(chat_id))
-            await message.reply_photo(thumb, caption=cap, reply_markup=BUTTONS)
-            await m.delete()
-            os.remove(aud)
-    except Exception as e:
-        return await m.edit(str(e))
-    
-    
-@bot.on_message(filters.command("video") & filters.group)
+@bot.on_message(filters.command(["play", "video"]) & filters.group)
 async def video_play(_, message):
     await message.delete()
     user_id = message.from_user.id
     if user_id != OWNER_ID:
         return
+    state = message.command[0].lower()
     try:
         query = message.text.split(None, 1)[1]
     except:
-        return await message.reply_text("<b>Usage:</b> <code>/video [query]</code>")
+        return await message.reply_text(f"<b>Usage:</b> <code>/{state} [query]</code>")
     chat_id = message.chat.id
     m = await message.reply_text("🔄 Processing...")
+    if state == "play":
+        damn = AudioPiped
+        ded = yt_audio
+        emj = "🎵"
+    elif state == "video":
+        damn = AudioVideoPiped
+        ded = yt_video
+        emj = "🎬"
     try:
         results = YoutubeSearch(query, max_results=1).to_dict()
         link = f"https://youtube.com{results[0]['url_suffix']}"
-        ytid = link.split("=")[1]
         thumb = results[0]["thumbnails"][0]
         duration = results[0]["duration"]
         yt = YouTube(link)
-        cap = f"🎬 <b>Playing:</b> [{yt.title}]({link}) \n\n⏳ <b>Duration:</b> {duration}"
-        ydl_opts = {'format': 'bv*[height<=480]+ba/b[height<=480] / wv*+ba/w'}
-        with YoutubeDL(ydl_opts) as ydl:
-            ydl.download([link])
-
-        vid = glob.glob(f"*{ytid}*")[0]            
+        cap = f"{emj} <b>Playing:</b> [{yt.title}]({link}) \n\n⏳ <b>Duration:</b> {duration}"
+        ice, playlink = await ded(link)
+        if ice == "0":
+            return await m.edit("❗️YTDL ERROR !!!")             
     except Exception as e:
         return await m.edit(str(e))
     
     try:
         if str(chat_id) in CHATS:
-            await app.change_stream(
+            await app.leave_group_call(chat_id)
+            await app.join_group_call(
                 chat_id,
-                AudioVideoPiped(vid)
+                damn(playlink),
+                stream_type=StreamType().pulse_stream
             )
             await message.reply_photo(thumb, caption=cap, reply_markup=BUTTONS)
             await m.delete()
-            os.remove(vid)
         else:            
             await app.join_group_call(
                 chat_id,
-                AudioVideoPiped(vid)
+                damn(playlink),
+                stream_type=StreamType().pulse_stream
             )
             CHATS.append(str(chat_id))
             await message.reply_photo(thumb, caption=cap, reply_markup=BUTTONS)
             await m.delete()
-            os.remove(vid)
     except Exception as e:
         return await m.edit(str(e))
     
@@ -245,27 +237,34 @@ async def stream_func(_, message):
     user_id = message.from_user.id
     if user_id != OWNER_ID:
         return
+    state = message.command[0].lower()
     try:
         link = message.text.split(None, 1)[1]
     except:
-        return await message.reply_text("<b>Usage:</b> <code>/stream [link]</code>")
+        return await message.reply_text(f"<b>Usage:</b> <code>/{state} [link]</code>")
     chat_id = message.chat.id
-    state = message.command[0].lower()
+    
     if state == "saudio":
         damn = AudioPiped
+        emj = "🎵"
     elif state == "svideo":
         damn = AudioVideoPiped
+        emj = "🎬"
     m = await message.reply_text("🔄 Processing...")
     try:
         if str(chat_id) in CHATS:
-            await m.edit("❗️Voice chat is already running, please <code>/stop</code> it and then try again!")
+            await app.leave_group_call(chat_id)
+            await app.join_group_call(
+                chat_id,
+                damn(link),
+                stream_type=StreamType().pulse_stream)
         else:    
             await app.join_group_call(
                 chat_id,
                 damn(link),
                 stream_type=StreamType().pulse_stream)
             CHATS.append(str(chat_id))
-            await m.edit(f"✅ Started streaming: [Link]({link})", disable_web_page_preview=True)
+            await m.edit(f"{emj} Started streaming...")
     except Exception as e:
         return await m.edit(str(e))    
     
