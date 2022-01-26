@@ -123,6 +123,9 @@ async def skip_current_song(chat_id):
                     chat_id, AudioVideoPiped(playlink, HighQualityAudio(), hm)
                 )
             pop_an_item(chat_id)
+            await bot.send_photo(chat_id, photo = f"{dd[4]}",
+                                 caption = f"▶️ Now playing:</b> [{title}]({link}) | `{type}` \n\n⏳ <b>Duration:</b> {duration}",
+                                 disable_web_page_preview=True)
             return [title, link, type, duration, thumb]
     else:
         return 0
@@ -147,26 +150,13 @@ async def skip_item(chat_id, lol):
 async def on_end_handler(_, update: Update):
     if isinstance(update, StreamAudioEnded):
         chat_id = update.chat_id
-        dd = await skip_current_song(chat_id)
-        try:
-            await message.reply_photo(photo = f"{dd[4]}",
-                                      caption = f"▶️ Now playing:</b> [{dd[0]}]({dd[1]}) | `{dd[2]}` \n\n⏳ <b>Duration:</b> {op[3]}",
-                                      disable_web_page_preview=True)
-        except:
-            pass    
-
+        await skip_current_song(chat_id)
 
 @app.on_stream_end()
 async def on_end_handler(_, update: Update):
     if isinstance(update, StreamVideoEnded):
         chat_id = update.chat_id
-        dd = await skip_current_song(chat_id)
-        try:
-            await message.reply_photo(photo = f"{dd[4]}",
-                                      caption = f"▶️ Now playing:</b> [{dd[0]}]({dd[1]}) | `{dd[2]}` \n\n⏳ <b>Duration:</b> {op[3]}",
-                                      disable_web_page_preview=True)
-        except:
-            pass
+        await skip_current_song(chat_id)
 
 
 @app.on_closed_voice_chat()
