@@ -260,8 +260,6 @@ async def start_group(_, message):
 async def video_play(_, message):
     await message.delete()
     user_id = message.from_user.id
-    if user_id != OWNER_ID:
-        return
     state = message.command[0].lower()
     try:
         query = message.text.split(None, 1)[1]
@@ -399,10 +397,10 @@ async def playlist(_, message):
             out = f"▶️ <b>Now playing:</b> [{chat_queue[0][0]}]({chat_queue[0][2]}) | `{chat_queue[0][4]}` \n\n<b>📃 Queue:</b> \n"
             l = len(chat_queue)
             for x in range(1, l):
-                hmm = chat_queue[x][0]
-                hmmm = chat_queue[x][2]
-                hmmmm = chat_queue[x][4]
-                out = out + "\n" + f"<b>#️⃣ {x}</b> - [{hmm}]({hmmm}) | `{hmmmm}` \n"
+                title = chat_queue[x][0]
+                link = chat_queue[x][2]
+                type = chat_queue[x][4]
+                out = out + "\n" + f"<b>#️⃣ {x}</b> - [{title}]({link}) | `{type}` \n"
             await message.reply_text(out, disable_web_page_preview=True)
     else:
         await message.reply_text("❗Nothing is playing.")
@@ -412,9 +410,6 @@ async def playlist(_, message):
 @is_admin
 async def end(_, message):
     await message.delete()
-    user_id = message.from_user.id
-    if user_id != OWNER_ID:
-        return
     chat_id = message.chat.id
     if chat_id in QUEUE:
         await app.leave_group_call(chat_id)
@@ -428,9 +423,6 @@ async def end(_, message):
 @is_admin
 async def pause(_, message):
     await message.delete()
-    user_id = message.from_user.id
-    if user_id != OWNER_ID:
-        return
     chat_id = message.chat.id
     if chat_id in QUEUE:
         try:
@@ -446,9 +438,6 @@ async def pause(_, message):
 @is_admin
 async def resume(_, message):
     await message.delete()
-    user_id = message.from_user.id
-    if user_id != OWNER_ID:
-        return
     chat_id = message.chat.id
     if chat_id in QUEUE:
         try:
@@ -464,9 +453,6 @@ async def resume(_, message):
 @is_admin
 async def mute(_, message):
     await message.delete()
-    user_id = message.from_user.id
-    if user_id != OWNER_ID:
-        return
     chat_id = message.chat.id
     if chat_id in QUEUE:
         try:
@@ -482,9 +468,6 @@ async def mute(_, message):
 @is_admin
 async def unmute(_, message):
     await message.delete()
-    user_id = message.from_user.id
-    if user_id != OWNER_ID:
-        return
     chat_id = message.chat.id
     if chat_id in QUEUE:
         try:
