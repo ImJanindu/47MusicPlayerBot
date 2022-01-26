@@ -30,10 +30,18 @@ from pytgcalls import StreamType
 from pytube import YouTube
 from youtube_search import YoutubeSearch
 from pytgcalls import PyTgCalls, idle
-from pytgcalls.types import AudioPiped, AudioVideoPiped, GroupCall
+from pytgcalls.types import Update
+from pytgcalls.types import AudioPiped, AudioVideoPiped
+from pytgcalls.types import (
+    HighQualityAudio,
+    HighQualityVideo,
+    LowQualityVideo,
+    MediumQualityVideo
+)
+from pytgcalls.types.stream import StreamAudioEnded, StreamVideoEnded
 from pyrogram import Client, filters
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, CallbackQuery
-from helpers.queues import QUEUE, add_to_queue, get_queue, clear_queue
+from helpers.queues import QUEUE, add_to_queue, get_queue, clear_queue, pop_an_item
 
 bot = Client(
     "Music Stream Bot",
@@ -80,6 +88,80 @@ BUTTONS = InlineKeyboardMarkup(
     ]
 )
 
+async def skip_current_song(chat_id):
+    if chat_id in QUEUE:
+        chat_queue = get_queue(chat_id)
+        if len(chat_queue) == 1:
+            await app.leave_group_call(chat_id)
+            clear_queue(chat_id)
+            return 1
+        else:
+            title = chat_queue[1][0]
+            duration = chat_queue[1][1]
+            link = chat_queue[1][2]
+            playlink = chat_queue[1][3]
+            type = chat_queue[1][4]
+            Q = chat_queue[1][5]
+            if type == "Audio":
+                await call_py.change_stream(
+                    chat_id,
+                    AudioPiped(
+                        playlink,
+                    ),
+                )
+            elif type == "Video":
+                if Q == "high":
+                    hm = HighQualityVideo()
+                elif Q == "mid":
+                    hm = MediumQualityVideo()
+                elif Q == "low":
+                    hm = LowQualityVideo()
+                else:
+                    hm = MediumQualityVideo()
+                await app.change_stream(
+                    chat_id, AudioVideoPiped(playlink, HighQualityAudio(), hm)
+                )
+            pop_an_item(chat_id)
+            return [title, link, type]
+    else:
+        return 0
+
+
+async def skip_item(chat_id, lol):
+    if chat_id in QUEUE:
+        chat_queue = get_queue(chat_id)
+        try:
+            x = int(lol)
+            title = chat_queue[x][0]
+            chat_queue.pop(x)
+            return title
+        except Exception as e:
+            print(e)
+            return 0
+    else:
+        return 0
+
+
+@app.on_stream_end()
+async def on_end_handler(_, update: Update):
+    if isinstance(update, StreamAudioEnded):
+        chat_id = update.chat_id
+        await skip_current_song(chat_id)
+
+
+@app.on_stream_end()
+async def on_end_handler(_, update: Update):
+    if isinstance(update, StreamVideoEnded):
+        chat_id = update.chat_id
+        await skip_current_song(chat_id)
+
+
+@app.on_closed_voice_chat()
+async def close_handler(client: PyTgCalls, chat_id: int):
+    if chat_id in QUEUE:
+        clear_queue(chat_id)
+        
+
 async def yt_video(link):
     proc = await asyncio.create_subprocess_exec(
         "yt-dlp",
@@ -122,7 +204,7 @@ async def callbacks(_, cq: CallbackQuery):
     data = cq.data
     if data == "close":
         return await cq.message.delete()
-    if not str(chat_id) in QUEUE:
+    if not chat_id in QUEUE:
         return await cq.answer("Nothing is playing.")
 
     if data == "pause":
@@ -188,10 +270,20 @@ async def video_play(_, message):
         damn = AudioPiped
         ded = yt_audio
         emj = "🎵"
+        doom = "Audio"
     elif state == "video":
         damn = AudioVideoPiped
         ded = yt_video
         emj = "🎬"
+        doom = "Video"
+    if "low" in query:
+        Q = "low"
+    elif "mid" in query:
+        Q = "mid"
+    elif "high" in query:
+        Q = "high"
+    else:
+        Q = "0"
     try:
         results = YoutubeSearch(query, max_results=1).to_dict()
         link = f"https://youtube.com{results[0]['url_suffix']}"
@@ -206,8 +298,8 @@ async def video_play(_, message):
         return await m.edit(str(e))
     
     try:
-        if str(chat_id) in QUEUE:
-            position = add_to_queue(chat_id, yt.title, duration, link, playlink)
+        if chat_id in QUEUE:
+            position = add_to_queue(chat_id, yt.title, duration, link, playlink, doom, Q)
             caps = f"{emj} <b>Playing:</b> [{yt.title}]({link}) \n\n⏳ <b>Duration:</b> {duration} \n#️⃣ <b>Queued at position:</b> {position}"
             await message.reply_photo(thumb, caption=caps)
             await m.delete()
@@ -217,14 +309,14 @@ async def video_play(_, message):
                 damn(playlink),
                 stream_type=StreamType().pulse_stream
             )
-            add_to_queue(chat_id, yt.title, duration, link, playlink)
+            add_to_queue(chat_id, yt.title, duration, link, playlink, doom, Q)
             await message.reply_photo(thumb, caption=cap, reply_markup=BUTTONS)
             await m.delete()
     except Exception as e:
         return await m.edit(str(e))
     
     
-@bot.on_message(filters.command(["saudio", "svideo"]) & filters.group)
+"""@bot.on_message(filters.command(["saudio", "svideo"]) & filters.group)
 async def stream_func(_, message):
     await message.delete()
     user_id = message.from_user.id
@@ -245,7 +337,7 @@ async def stream_func(_, message):
         emj = "🎬"
     m = await message.reply_text("🔄 Processing...")
     try:
-        if str(chat_id) in QUEUE:
+        if chat_id in QUEUE:
             position = add_to_queue(chat_id, yt.title, duration, link, playlink)
             caps = f"{emj} <b>Playing:</b> [{yt.title}]({link}) \n\n⏳ <b>Duration:</b> {duration} \n#️⃣ <b>Queued at position:</b> {position}"
             await message.reply_photo(thumb, caption=caps)
@@ -258,7 +350,40 @@ async def stream_func(_, message):
             add_to_queue(chat_id, yt.title, duration, link, playlink)
             await m.edit(f"{emj} Started streaming...")
     except Exception as e:
-        return await m.edit(str(e))    
+        return await m.edit(str(e))"""
+
+
+@bot.on_message(filters.command("skip") & filters.group)
+async def skip(_, message):
+    await message.delete()
+    chat_id = message.chat.id
+    if len(m.command) < 2:
+        op = await skip_current_song(chat_id)
+        if op == 0:
+            await message.reply_text("❗️Nothing in the queue to skip.")
+        elif op == 1:
+            await message.reply_text("❗️Empty queue.")
+        else:
+            await message.reply_text(
+                f"⏭ <b>Skipped \n\n🎧 Now playing:</b> [{op[0]}]({op[1]}) | `{op[2]}`",
+                disable_web_page_preview=True,
+            )
+    else:
+        skip = message.text.split(None, 1)[1]
+        out = "🗑 <b>Removed the following songs from the queue:</b> \n\n"
+        if chat_id in QUEUE:
+            items = [int(x) for x in skip.split(" ") if x.isdigit()]
+            items.sort(reverse=True)
+            for x in items:
+                if x == 0:
+                    pass
+                else:
+                    hm = await skip_item(chat_id, x)
+                    if hm == 0:
+                        pass
+                    else:
+                        out = out + f"<b>#️⃣ {x}</b> - {hm}"
+            await message.reply_text(out)
     
 
 @bot.on_message(filters.command("stop") & filters.group)
@@ -268,7 +393,7 @@ async def end(_, message):
     if user_id != OWNER_ID:
         return
     chat_id = message.chat.id
-    if str(chat_id) in QUEUE:
+    if chat_id in QUEUE:
         await app.leave_group_call(chat_id)
         clear_queue(chat_id)
         await message.reply_text("⏹ Stopped streaming.")
@@ -283,7 +408,7 @@ async def pause(_, message):
     if user_id != OWNER_ID:
         return
     chat_id = message.chat.id
-    if str(chat_id) in QUEUE:
+    if chat_id in QUEUE:
         try:
             await app.pause_stream(chat_id)
             await message.reply_text("⏸ Paused streaming.")
@@ -300,7 +425,7 @@ async def resume(_, message):
     if user_id != OWNER_ID:
         return
     chat_id = message.chat.id
-    if str(chat_id) in QUEUE:
+    if chat_id in QUEUE:
         try:
             await app.resume_stream(chat_id)
             await message.reply_text("⏸ Resumed streaming.")
@@ -317,7 +442,7 @@ async def mute(_, message):
     if user_id != OWNER_ID:
         return
     chat_id = message.chat.id
-    if str(chat_id) in QUEUE:
+    if chat_id in QUEUE:
         try:
             await app.mute_stream(chat_id)
             await message.reply_text("🔇 Muted streaming.")
@@ -334,7 +459,7 @@ async def unmute(_, message):
     if user_id != OWNER_ID:
         return
     chat_id = message.chat.id
-    if str(chat_id) in QUEUE:
+    if chat_id in QUEUE:
         try:
             await app.unmute_stream(chat_id)
             await message.reply_text("🔊 Unmuted streaming.")
