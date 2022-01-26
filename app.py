@@ -43,6 +43,7 @@ from pytgcalls.types.stream import StreamAudioEnded, StreamVideoEnded
 from pyrogram import Client, filters
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, CallbackQuery
 from helpers.queues import QUEUE, add_to_queue, get_queue, clear_queue, pop_an_item
+from helpers.admin_check import *
 
 bot = Client(
     "Music Stream Bot",
