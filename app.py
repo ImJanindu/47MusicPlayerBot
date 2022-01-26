@@ -362,7 +362,7 @@ async def stream_func(_, message):
     m = await message.reply_text("🔄 Processing...")
     try:
         if chat_id in QUEUE:
-            return await m.edit("❗️Please send <code>/endstream</code> to end voice chat before live streaming.")
+            return await m.edit("❗️Please send <code>/stop</code> to end voice chat before live streaming.")
         elif chat_id in LIVE_CHATS:
             return await m.edit("❗️Please send <code>/endstream</code> to end current live streaming before live stream again.")
         else:    
@@ -449,6 +449,7 @@ async def end_stream(_, message):
     await message.delete()
     chat_id = message.chat.id
     if chat_id in LIVE_CHATS:
+        await app.leave_group_call(chat_id)
         LIVE_CHATS.remove(chat_id)
         await message.reply_text("⏹ Stopped current streaming.")
     else:
