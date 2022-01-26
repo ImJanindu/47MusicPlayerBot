@@ -357,7 +357,7 @@ async def stream_func(_, message):
 async def skip(_, message):
     await message.delete()
     chat_id = message.chat.id
-    if len(m.command) < 2:
+    if len(message.command) < 2:
         op = await skip_current_song(chat_id)
         if op == 0:
             await message.reply_text("❗️Nothing in the queue to skip.")
