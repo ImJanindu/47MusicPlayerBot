@@ -370,7 +370,7 @@ async def stream_func(_, message):
                 chat_id,
                 damn(link),
                 stream_type=StreamType().pulse_stream)
-            await m.edit(f"{emj} Started streaming...")
+            await m.edit(f"{emj} Started streaming: [Link]({link})")
             LIVE_CHATS.append(chat_id)
     except Exception as e:
         return await m.edit(str(e))
