@@ -33,6 +33,7 @@ from pytgcalls import PyTgCalls, idle
 from pytgcalls.types import AudioPiped, AudioVideoPiped, GroupCall
 from pyrogram import Client, filters
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, CallbackQuery
+from helpers.queues import QUEUE, add_to_queue, get_queue, clear_queue
 
 bot = Client(
     "Music Stream Bot",
@@ -44,8 +45,6 @@ bot = Client(
 client = Client(os.environ["SESSION_NAME"], int(os.environ["API_ID"]), os.environ["API_HASH"])
 
 app = PyTgCalls(client)
-
-CHATS = []
 
 OWNER_ID = int(os.environ["OWNER_ID"])
 
@@ -123,7 +122,7 @@ async def callbacks(_, cq: CallbackQuery):
     data = cq.data
     if data == "close":
         return await cq.message.delete()
-    if not str(chat_id) in CHATS:
+    if not str(chat_id) in QUEUE:
         return await cq.answer("Nothing is playing.")
 
     if data == "pause":
@@ -142,7 +141,7 @@ async def callbacks(_, cq: CallbackQuery):
 
     elif data == "stop":
         await app.leave_group_call(chat_id)
-        CHATS.clear()
+        clear_queue(chat_id)
         await cq.answer("Stopped streaming.")  
 
     elif data == "mute":
@@ -207,14 +206,10 @@ async def video_play(_, message):
         return await m.edit(str(e))
     
     try:
-        if str(chat_id) in CHATS:
-            await app.leave_group_call(chat_id)
-            await app.join_group_call(
-                chat_id,
-                damn(playlink),
-                stream_type=StreamType().pulse_stream
-            )
-            await message.reply_photo(thumb, caption=cap, reply_markup=BUTTONS)
+        if str(chat_id) in QUEUE:
+            position = add_to_queue(chat_id, yt.title, duration, link, playlink)
+            caps = f"{emj} <b>Playing:</b> [{yt.title}]({link}) \n\n⏳ <b>Duration:</b> {duration} \n#️⃣ <b>Queued at position:</b> {position}"
+            await message.reply_photo(thumb, caption=caps)
             await m.delete()
         else:            
             await app.join_group_call(
@@ -222,7 +217,7 @@ async def video_play(_, message):
                 damn(playlink),
                 stream_type=StreamType().pulse_stream
             )
-            CHATS.append(str(chat_id))
+            add_to_queue(chat_id, yt.title, duration, link, playlink)
             await message.reply_photo(thumb, caption=cap, reply_markup=BUTTONS)
             await m.delete()
     except Exception as e:
@@ -250,18 +245,17 @@ async def stream_func(_, message):
         emj = "🎬"
     m = await message.reply_text("🔄 Processing...")
     try:
-        if str(chat_id) in CHATS:
-            await app.leave_group_call(chat_id)
-            await app.join_group_call(
-                chat_id,
-                damn(link),
-                stream_type=StreamType().pulse_stream)
+        if str(chat_id) in QUEUE:
+            position = add_to_queue(chat_id, yt.title, duration, link, playlink)
+            caps = f"{emj} <b>Playing:</b> [{yt.title}]({link}) \n\n⏳ <b>Duration:</b> {duration} \n#️⃣ <b>Queued at position:</b> {position}"
+            await message.reply_photo(thumb, caption=caps)
+            await m.delete()
         else:    
             await app.join_group_call(
                 chat_id,
                 damn(link),
                 stream_type=StreamType().pulse_stream)
-            CHATS.append(str(chat_id))
+            add_to_queue(chat_id, yt.title, duration, link, playlink)
             await m.edit(f"{emj} Started streaming...")
     except Exception as e:
         return await m.edit(str(e))    
@@ -274,9 +268,9 @@ async def end(_, message):
     if user_id != OWNER_ID:
         return
     chat_id = message.chat.id
-    if str(chat_id) in CHATS:
+    if str(chat_id) in QUEUE:
         await app.leave_group_call(chat_id)
-        CHATS.clear()
+        clear_queue(chat_id)
         await message.reply_text("⏹ Stopped streaming.")
     else:
         await message.reply_text("❗Nothing is playing.")
@@ -289,7 +283,7 @@ async def pause(_, message):
     if user_id != OWNER_ID:
         return
     chat_id = message.chat.id
-    if str(chat_id) in CHATS:
+    if str(chat_id) in QUEUE:
         try:
             await app.pause_stream(chat_id)
             await message.reply_text("⏸ Paused streaming.")
@@ -306,7 +300,7 @@ async def resume(_, message):
     if user_id != OWNER_ID:
         return
     chat_id = message.chat.id
-    if str(chat_id) in CHATS:
+    if str(chat_id) in QUEUE:
         try:
             await app.resume_stream(chat_id)
             await message.reply_text("⏸ Resumed streaming.")
@@ -323,7 +317,7 @@ async def mute(_, message):
     if user_id != OWNER_ID:
         return
     chat_id = message.chat.id
-    if str(chat_id) in CHATS:
+    if str(chat_id) in QUEUE:
         try:
             await app.mute_stream(chat_id)
             await message.reply_text("🔇 Muted streaming.")
@@ -340,7 +334,7 @@ async def unmute(_, message):
     if user_id != OWNER_ID:
         return
     chat_id = message.chat.id
-    if str(chat_id) in CHATS:
+    if str(chat_id) in QUEUE:
         try:
             await app.unmute_stream(chat_id)
             await message.reply_text("🔊 Unmuted streaming.")
