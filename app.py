@@ -24,8 +24,10 @@ SOFTWARE.
 
 import os
 import glob
+import json
 import logging
 import asyncio
+import youtube_dl
 from pytgcalls import StreamType
 from pytube import YouTube
 from youtube_search import YoutubeSearch
@@ -317,9 +319,17 @@ async def video_play(_, message):
         duration = results[0]["duration"]
         yt = YouTube(link)
         cap = f"▶️ <b>Now playing:</b> [{yt.title}]({link}) | `{doom}` \n\n⏳ <b>Duration:</b> {duration}"
-        ice, playlink = await ded(link)
-        if ice == "0":
-            return await m.edit("❗️YTDL ERROR !!!")             
+        try:
+            ydl_opts = {"format": "bestvideo[height<=720]+bestaudio/best[height<=720]"}
+            ydl = youtube_dl.YoutubeDL(ydl_opts)
+            info_dict = ydl.extract_info(link, download=False)
+            p = json.dumps(info_dict)
+            a = json.loads(p)
+            playlink = a['formats'][1]['manifest_url']
+        except:
+            ice, playlink = await ded(link)
+            if ice == "0":
+                return await m.edit("❗️YTDL ERROR !!!")               
     except Exception as e:
         return await m.edit(str(e))
     
@@ -364,7 +374,11 @@ async def stream_func(_, message):
         if chat_id in QUEUE:
             return await m.edit("❗️Please send <code>/stop</code> to end voice chat before live streaming.")
         elif chat_id in LIVE_CHATS:
-            return await m.edit("❗️Please send <code>/stop</code> to end current live streaming before live stream again.")
+            await app.change_stream(
+                chat_id,
+                damn(link)
+            )
+            await m.edit(f"{emj} Started streaming: [Link]({link})", disable_web_page_preview=True)
         else:    
             await app.join_group_call(
                 chat_id,
