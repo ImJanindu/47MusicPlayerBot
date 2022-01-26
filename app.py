@@ -103,7 +103,7 @@ async def skip_current_song(chat_id):
             type = chat_queue[1][4]
             Q = chat_queue[1][5]
             if type == "Audio":
-                await call_py.change_stream(
+                await app.change_stream(
                     chat_id,
                     AudioPiped(
                         playlink,
@@ -300,7 +300,7 @@ async def video_play(_, message):
     try:
         if chat_id in QUEUE:
             position = add_to_queue(chat_id, yt.title, duration, link, playlink, doom, Q)
-            caps = f"{emj} <b>Playing:</b> [{yt.title}]({link}) \n\n⏳ <b>Duration:</b> {duration} \n#️⃣ <b>Queued at position:</b> {position}"
+            caps = f"#️⃣ [{yt.title}]({link}) queued at position: {position} \n\n⏳ <b>Duration:</b> {duration}"
             await message.reply_photo(thumb, caption=caps)
             await m.delete()
         else:            
