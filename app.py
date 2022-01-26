@@ -241,8 +241,6 @@ async def callbacks(_, cq: CallbackQuery):
     elif data == "stop":
         await app.leave_group_call(chat_id)
         clear_queue(chat_id)
-        if chat_id in LIVE_CHATS:
-            LIVE_CHATS.remove(chat_id)
         await cq.answer("Stopped streaming.")  
 
     elif data == "mute":
@@ -436,11 +434,11 @@ async def playlist(_, message):
 async def end(_, message):
     await message.delete()
     chat_id = message.chat.id
+    if chat_id in LIVE_CHATS:
+        LIVE_CHATS.remove(chat_id)
     if chat_id in QUEUE:
         await app.leave_group_call(chat_id)
         clear_queue(chat_id)
-        if chat_id in LIVE_CHATS:
-            LIVE_CHATS.remove(chat_id)
         await message.reply_text("⏹ Stopped streaming.")
     else:
         await message.reply_text("❗Nothing is playing.")
