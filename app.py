@@ -378,7 +378,7 @@ async def skip(_, message):
             await message.reply_text("❗️Empty queue, stopped streaming.")
         else:
             await message.reply_text(
-                f"⏭ <b>Skipped! \n▶️ Now playing:</b> [{op[0]}]({op[1]}) | `{op[2]}` \n\n⏳ <b>Duration:</b> {op[3]}",
+                f"⏭ <b>Skipped! \n\n▶️ Now playing:</b> [{op[0]}]({op[1]}) | `{op[2]}` \n\n⏳ <b>Duration:</b> {op[3]}",
                 disable_web_page_preview=True,
             )
     else:
