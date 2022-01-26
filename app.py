@@ -208,7 +208,7 @@ async def yt_audio(link):
 async def callbacks(_, cq: CallbackQuery):
     user_id = cq.from_user.id
     try:
-        user = await message.chat.get_member(user_id)
+        user = await cq.message.chat.get_member(user_id)
         admin_strings = ("creator", "administrator")
         if user.status not in admin_strings:
             is_admin = False
