@@ -86,8 +86,7 @@ async def yt_video(link):
         "yt-dlp",
         "-g",
         "-f",
-        # CHANGE THIS BASED ON WHAT YOU WANT
-        "best[height<=?480][width<=?720]",
+        "bv*[height<=720]+ba/b[height<=720] / wv*+ba/w",
         f"{link}",
         stdout=asyncio.subprocess.PIPE,
         stderr=asyncio.subprocess.PIPE,
@@ -104,7 +103,6 @@ async def yt_audio(link):
         "yt-dlp",
         "-g",
         "-f",
-        # CHANGE THIS BASED ON WHAT YOU WANT
         "bestaudio",
         f"{link}",
         stdout=asyncio.subprocess.PIPE,
