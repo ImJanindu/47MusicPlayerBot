@@ -102,6 +102,7 @@ async def skip_current_song(chat_id):
             playlink = chat_queue[1][3]
             type = chat_queue[1][4]
             Q = chat_queue[1][5]
+            thumb = chat_queue[1][6]
             if type == "Audio":
                 await app.change_stream(
                     chat_id,
@@ -122,7 +123,7 @@ async def skip_current_song(chat_id):
                     chat_id, AudioVideoPiped(playlink, HighQualityAudio(), hm)
                 )
             pop_an_item(chat_id)
-            return [title, link, type]
+            return [title, link, type, duration, thumb]
     else:
         return 0
 
@@ -146,14 +147,29 @@ async def skip_item(chat_id, lol):
 async def on_end_handler(_, update: Update):
     if isinstance(update, StreamAudioEnded):
         chat_id = update.chat_id
-        await skip_current_song(chat_id)
+        dd = await skip_current_song(chat_id)
+        try:
+            await message.reply_photo(photo = dd[4],
+                    f"▶️ Now playing:</b> [{dd[0]}]({dd[1]}) | `{dd[2]}` \n\n⏳ <b>Duration:</b> {op[3]}",
+                    disable_web_page_preview=True,
+                )
+        except:
+            pass
+        
 
 
 @app.on_stream_end()
 async def on_end_handler(_, update: Update):
     if isinstance(update, StreamVideoEnded):
         chat_id = update.chat_id
-        await skip_current_song(chat_id)
+        dd = await skip_current_song(chat_id)
+        try:
+            await message.reply_photo(photo = dd[4],
+                    f"▶️ Now playing:</b> [{dd[0]}]({dd[1]}) | `{dd[2]}` \n\n⏳ <b>Duration:</b> {op[3]}",
+                    disable_web_page_preview=True,
+                )
+        except:
+            pass
 
 
 @app.on_closed_voice_chat()
@@ -167,7 +183,7 @@ async def yt_video(link):
         "yt-dlp",
         "-g",
         "-f",
-        "bv*[height<=720]+ba/b[height<=720] / wv*+ba/w",
+        "best[height<=?720][width<=?1280]",
         f"{link}",
         stdout=asyncio.subprocess.PIPE,
         stderr=asyncio.subprocess.PIPE,
@@ -290,7 +306,7 @@ async def video_play(_, message):
         thumb = results[0]["thumbnails"][0]
         duration = results[0]["duration"]
         yt = YouTube(link)
-        cap = f"{emj} <b>Playing:</b> [{yt.title}]({link}) \n\n⏳ <b>Duration:</b> {duration}"
+        cap = f"{emj} <b>Now playing:</b> [{yt.title}]({link}) \n\n⏳ <b>Duration:</b> {duration}"
         ice, playlink = await ded(link)
         if ice == "0":
             return await m.edit("❗️YTDL ERROR !!!")             
@@ -299,8 +315,8 @@ async def video_play(_, message):
     
     try:
         if chat_id in QUEUE:
-            position = add_to_queue(chat_id, yt.title, duration, link, playlink, doom, Q)
-            caps = f"#️⃣ [{yt.title}]({link}) queued at position: {position} \n\n⏳ <b>Duration:</b> {duration}"
+            position = add_to_queue(chat_id, yt.title, duration, link, playlink, doom, Q, thumb)
+            caps = f"#️⃣ [{yt.title}]({link}) <b>queued at position:</b> {position} \n\n⏳ <b>Duration:</b> {duration}"
             await message.reply_photo(thumb, caption=caps)
             await m.delete()
         else:            
@@ -309,7 +325,7 @@ async def video_play(_, message):
                 damn(playlink),
                 stream_type=StreamType().pulse_stream
             )
-            add_to_queue(chat_id, yt.title, duration, link, playlink, doom, Q)
+            add_to_queue(chat_id, yt.title, duration, link, playlink, doom, Q, thumb)
             await message.reply_photo(thumb, caption=cap, reply_markup=BUTTONS)
             await m.delete()
     except Exception as e:
@@ -362,15 +378,15 @@ async def skip(_, message):
         if op == 0:
             await message.reply_text("❗️Nothing in the queue to skip.")
         elif op == 1:
-            await message.reply_text("❗️Empty queue.")
+            await message.reply_text("❗️Empty queue, stopped streaming.")
         else:
             await message.reply_text(
-                f"⏭ <b>Skipped \n\n🎧 Now playing:</b> [{op[0]}]({op[1]}) | `{op[2]}`",
+                f"⏭ <b>Skipped! \n▶️ Now playing:</b> [{op[0]}]({op[1]}) | `{op[2]}` \n\n⏳ <b>Duration:</b> {op[3]}",
                 disable_web_page_preview=True,
             )
     else:
         skip = message.text.split(None, 1)[1]
-        out = "🗑 <b>Removed the following songs from the queue:</b> \n\n"
+        out = "🗑 <b>Removed the following song(s) from the queue:</b> \n"
         if chat_id in QUEUE:
             items = [int(x) for x in skip.split(" ") if x.isdigit()]
             items.sort(reverse=True)
@@ -382,7 +398,7 @@ async def skip(_, message):
                     if hm == 0:
                         pass
                     else:
-                        out = out + f"<b>#️⃣ {x}</b> - {hm}"
+                        out = out + "\n" + f"<b>#️⃣ {x}</b> - {hm}"
             await message.reply_text(out)
     
 
