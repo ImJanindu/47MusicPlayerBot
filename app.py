@@ -149,9 +149,9 @@ async def on_end_handler(_, update: Update):
         chat_id = update.chat_id
         dd = await skip_current_song(chat_id)
         try:
-            await message.reply_photo(photo = dd[4],
-                    f"▶️ Now playing:</b> [{dd[0]}]({dd[1]}) | `{dd[2]}` \n\n⏳ <b>Duration:</b> {op[3]}",
-                    disable_web_page_preview=True)
+            await message.reply_photo(photo = f"{dd[4]}",
+                                      caption = f"▶️ Now playing:</b> [{dd[0]}]({dd[1]}) | `{dd[2]}` \n\n⏳ <b>Duration:</b> {op[3]}",
+                                      disable_web_page_preview=True)
         except:
             pass    
 
@@ -162,9 +162,9 @@ async def on_end_handler(_, update: Update):
         chat_id = update.chat_id
         dd = await skip_current_song(chat_id)
         try:
-            await message.reply_photo(photo = dd[4],
-                    f"▶️ Now playing:</b> [{dd[0]}]({dd[1]}) | `{dd[2]}` \n\n⏳ <b>Duration:</b> {op[3]}",
-                    disable_web_page_preview=True)
+            await message.reply_photo(photo = f"{dd[4]}",
+                                      caption = f"▶️ Now playing:</b> [{dd[0]}]({dd[1]}) | `{dd[2]}` \n\n⏳ <b>Duration:</b> {op[3]}",
+                                      disable_web_page_preview=True)
         except:
             pass
 
