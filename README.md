@@ -6,6 +6,11 @@
 <a href="https://github.com/ImJanindu/47MusicPlayerBot/graphs/commit-activity" alt="Maintenance"> <img src="https://img.shields.io/badge/Maintained%3F-yes-green.svg?style=flat-square"></a></p>
 
 <p align="center"><a href="https://t.me/JaguarBots"><img src="https://telegra.ph/file/4c03ff6d25fc678a2fe08.jpg" height="300" width="310" alt="Music Player"></p>
+  
+## 👀 Features
+- Fast & Powerful player
+- Queues available
+- Multi chats supported
 
 ## ✨ Heroku Deploy
 - Fork the repo and change template link to forked repo link (else you will not able to deploy)
