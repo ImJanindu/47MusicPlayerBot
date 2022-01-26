@@ -35,7 +35,7 @@
 | Command  | Description                                          |
 | -------  | ---------------------------------------------------- |
 | /play    | play the given query or YouTube link as audio        |
-| /video   | play the given query or YouTube link as video        |
+| /vplay   | play the given query or YouTube link as video        |
 | /saudio  | stream m3u8 or live stream audio link                |
 | /svideo  | stream m3u8 or live stream video link                |
 | /skip    | play next song in queue                              |
