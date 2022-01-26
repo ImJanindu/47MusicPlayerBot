@@ -291,7 +291,7 @@ async def video_play(_, message):
         return await message.reply_text(f"<b>Usage:</b> <code>/{state} [query]</code>")
     chat_id = message.chat.id
     if chat_id in LIVE_CHATS:
-        return await message.reply_text("❗️Please send <code>/endstream</code> to end current live streaming before play songs or videos.")
+        return await message.reply_text("❗️Please send <code>/stop</code> to end current live streaming before play songs or videos.")
     
     m = await message.reply_text("🔄 Processing...")
     if state == "play":
@@ -364,7 +364,7 @@ async def stream_func(_, message):
         if chat_id in QUEUE:
             return await m.edit("❗️Please send <code>/stop</code> to end voice chat before live streaming.")
         elif chat_id in LIVE_CHATS:
-            return await m.edit("❗️Please send <code>/endstream</code> to end current live streaming before live stream again.")
+            return await m.edit("❗️Please send <code>/stop</code> to end current live streaming before live stream again.")
         else:    
             await app.join_group_call(
                 chat_id,
@@ -435,25 +435,17 @@ async def playlist(_, message):
 async def end(_, message):
     await message.delete()
     chat_id = message.chat.id
+    if chat_id in LIVE_CHATS:
+        await app.leave_group_call(chat_id)
+        LIVE_CHATS.remove(chat_id)
+        return await message.reply_text("⏹ Stopped streaming.")
+        
     if chat_id in QUEUE:
         await app.leave_group_call(chat_id)
         clear_queue(chat_id)
         await message.reply_text("⏹ Stopped streaming.")
     else:
         await message.reply_text("❗Nothing is playing.")
-        
-        
-@bot.on_message(filters.command("endstream") & filters.group)
-@is_admin
-async def end_stream(_, message):
-    await message.delete()
-    chat_id = message.chat.id
-    if chat_id in LIVE_CHATS:
-        await app.leave_group_call(chat_id)
-        LIVE_CHATS.remove(chat_id)
-        await message.reply_text("⏹ Stopped current streaming.")
-    else:
-        await message.reply_text("❗Nothing is streaming.")
         
 
 @bot.on_message(filters.command("pause") & filters.group)
