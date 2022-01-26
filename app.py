@@ -418,7 +418,7 @@ async def playlist(_, message):
                 disable_web_page_preview=True,
             )
         else:
-            out = f"▶️ <b>Now playing:</b> [{chat_queue[0][0]}]({chat_queue[0][2]}) | `{chat_queue[0][4]}` \n\n<b>📃 Queue:</b> \n"
+            out = f"<b>📃 Player queue:</b> \n\n▶️ <b>Now playing:</b> [{chat_queue[0][0]}]({chat_queue[0][2]}) | `{chat_queue[0][4]}` \n"
             l = len(chat_queue)
             for x in range(1, l):
                 title = chat_queue[x][0]
