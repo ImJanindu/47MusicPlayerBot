@@ -57,6 +57,8 @@ app = PyTgCalls(client)
 
 OWNER_ID = int(os.environ["OWNER_ID"])
 
+LIVE_CHATS = []
+
 START_TEXT = """
 Hi <b>{}</b> 👋
 
@@ -239,6 +241,8 @@ async def callbacks(_, cq: CallbackQuery):
     elif data == "stop":
         await app.leave_group_call(chat_id)
         clear_queue(chat_id)
+        if chat_id in LIVE_CHATS:
+            LIVE_CHATS.remove(chat_id)
         await cq.answer("Stopped streaming.")  
 
     elif data == "mute":
@@ -287,6 +291,9 @@ async def video_play(_, message):
     except:
         return await message.reply_text(f"<b>Usage:</b> <code>/{state} [query]</code>")
     chat_id = message.chat.id
+    if chat_id in LIVE_CHATS:
+        return await message.reply_text("❗️Please <code>/stop</code> current live streaming before play songs or videos.")
+    
     m = await message.reply_text("🔄 Processing...")
     if state == "play":
         damn = AudioPiped
@@ -336,12 +343,10 @@ async def video_play(_, message):
         return await m.edit(str(e))
     
     
-"""@bot.on_message(filters.command(["saudio", "svideo"]) & filters.group)
+@bot.on_message(filters.command(["saudio", "svideo"]) & filters.group)
+@is_admin
 async def stream_func(_, message):
     await message.delete()
-    user_id = message.from_user.id
-    if user_id != OWNER_ID:
-        return
     state = message.command[0].lower()
     try:
         link = message.text.split(None, 1)[1]
@@ -358,19 +363,18 @@ async def stream_func(_, message):
     m = await message.reply_text("🔄 Processing...")
     try:
         if chat_id in QUEUE:
-            position = add_to_queue(chat_id, yt.title, duration, link, playlink)
-            caps = f"{emj} <b>Playing:</b> [{yt.title}]({link}) \n\n⏳ <b>Duration:</b> {duration} \n#️⃣ <b>Queued at position:</b> {position}"
-            await message.reply_photo(thumb, caption=caps)
-            await m.delete()
+            return await m.edit("❗️Please <code>/stop</code> voice chat before live streaming.")
+        elif chat_id in LIVE_CHATS:
+            return await m.edit("❗️Please <code>/stop</code> current live streaming before live stream again.")
         else:    
             await app.join_group_call(
                 chat_id,
                 damn(link),
                 stream_type=StreamType().pulse_stream)
-            add_to_queue(chat_id, yt.title, duration, link, playlink)
             await m.edit(f"{emj} Started streaming...")
+            LIVE_CHATS.append(chat_id)
     except Exception as e:
-        return await m.edit(str(e))"""
+        return await m.edit(str(e))
 
 
 @bot.on_message(filters.command("skip") & filters.group)
@@ -435,6 +439,8 @@ async def end(_, message):
     if chat_id in QUEUE:
         await app.leave_group_call(chat_id)
         clear_queue(chat_id)
+        if chat_id in LIVE_CHATS:
+            LIVE_CHATS.remove(chat_id)
         await message.reply_text("⏹ Stopped streaming.")
     else:
         await message.reply_text("❗Nothing is playing.")
