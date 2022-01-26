@@ -298,7 +298,7 @@ async def video_play(_, message):
         damn = AudioPiped
         ded = yt_audio
         doom = "Audio"
-    elif state == "video":
+    elif state == "vplay":
         damn = AudioVideoPiped
         ded = yt_video
         doom = "Video"
