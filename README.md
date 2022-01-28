@@ -14,7 +14,7 @@
 - YouTube live links supported
 
 ## ✨ Heroku Deploy
-- Fork the repo and change template link to forked repo link (else you will not able to deploy)
+- Fork the repo and change template link in heroku deploy button to forked repo link (else you will not able to deploy)
 - Change the app region to Europe (it will help to make the bot stable)
   
 <p align="left"><a href="https://dashboard.heroku.com/new?template=https://github.com/ImJanindu/47MusicPlayerBot"><img src="https://img.shields.io/badge/Deploy%20To%20Heroku-blueviolet?style=for-the-badge&logo=heroku" width="250" alt="Deploy"></a></p>
