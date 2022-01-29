@@ -159,12 +159,6 @@ async def on_end_handler(_, update: Update):
         chat_id = update.chat_id
         await skip_current_song(chat_id)
 
-@app.on_stream_end()
-async def on_end_handler(_, update: Update):
-    if isinstance(update, StreamVideoEnded):
-        chat_id = update.chat_id
-        await skip_current_song(chat_id)
-
 
 @app.on_closed_voice_chat()
 async def close_handler(client: PyTgCalls, chat_id: int):
