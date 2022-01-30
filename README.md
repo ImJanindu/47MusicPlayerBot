@@ -39,6 +39,7 @@
 | /vplay   | play the given query or YouTube link as video        |
 | /saudio  | stream m3u8 or live stream audio link                |
 | /svideo  | stream m3u8 or live stream video link                |
+| /queue   | shows the songs in queue                             |        
 | /skip    | play next song in queue                              |
 | /pause   | pause the audio stream                               |
 | /resume  | resume the audio stream                              |
